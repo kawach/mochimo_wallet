@@ -1,25 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import {Navbar} from "./components/navbar"
+import {
+    BrowserRouter as Router,
+    Switch,
+} from "react-router-dom";
+import {connect} from "react-redux";
+import {Login} from "./components/Login";
+import New_Wallet from "./pages/New/new";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+function App(props) {
+    console.log(props)
+    return (
+        <Router>
+            <Navbar/>
+            <Switch>
+                <Router exact={true} path={"/"}>
+                    <div className={"container"}>
+                        <Login />
+                    </div>
+                </Router>
+                <Router exact={true} path={"/new"}>
+                    <New_Wallet />
+                </Router>
+                <Router exact={true} path={"/logged"}>
+                    <p> logged page </p>
+                </Router>
+            </Switch>
+        </Router>
+    );
 }
 
-export default App;
+function mapStateToProps(state) {
+    return state
+}
+
+export default connect(mapStateToProps, null)(App);
