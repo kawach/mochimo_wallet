@@ -5,7 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import store from "./redux/index.js"
-import 'bulma-start/css/main.css'
+import 'bulma';
+import bulmaCollapsible from '@creativebulma/bulma-collapsible';
 
 ReactDOM.render(
     <React.StrictMode>

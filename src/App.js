@@ -1,33 +1,32 @@
 import './App.css';
 import {Navbar} from "./components/navbar"
-import {
-    BrowserRouter as Router,
-    Switch,
-} from "react-router-dom";
+import {BrowserRouter as Router, Switch,Route} from "react-router-dom";
 import {connect} from "react-redux";
 import {Login} from "./components/Login";
 import New_Wallet from "./pages/New/new";
+import {Logged} from "./pages/Logged";
 
 function App(props) {
-    console.log(props)
+    const isAuthenticated = props.wallet ? props.wallet : undefined
+    // console.log(isAuthenticated)
     return (
         <Router>
-            <Navbar/>
+            <Navbar isAuthenticated={isAuthenticated}/>
             <Switch>
-                <Router exact={true} path={"/"}>
+                <Route exact={true} path={"/"}>
                     <div className={"container"}>
-                        <Login />
+                        <Login/>
                     </div>
-                </Router>
-                <Router exact={true} path={"/new"}>
-                    <New_Wallet />
-                </Router>
-                <Router exact={true} path={"/logged"}>
-                    <p> logged page </p>
-                </Router>
+                </Route>
+                <Route exact={true} path={"/new"}>
+                    <New_Wallet/>
+                </Route>
+                <Route path={"/logged"}>
+                    <Logged />
+                </Route>
             </Switch>
         </Router>
-    );
+    )
 }
 
 function mapStateToProps(state) {

@@ -3,7 +3,6 @@ import {SET_WALLET} from "../actionTypes";
 const initialState = {
     password_hash: undefined,
     many_balances: undefined,
-    creation_id: undefined,
     red: undefined,
     green: undefined,
     blue: undefined,
@@ -36,8 +35,8 @@ const initialState = {
 export default function (state = initialState, action) {
     switch (action.type) {
         case SET_WALLET:
-            return state
+            return action.payload
         default:
-            return state
+            return null
     }
 }
