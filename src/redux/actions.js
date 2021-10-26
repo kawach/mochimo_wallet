@@ -1,10 +1,10 @@
-export const SET_WALLET = (wallet_name, mnemonic_hash, password_hash) => {
+export const SET_WALLET = (pub, password_hash) => {
     return {
         type: "SET_WALLET",
         payload: {
             wallet_name: undefined,
-            mnemonic_hash: mnemonic_hash,
-            password_hash: password_hash,
+            wallet_public: pub,
+            wallet_password_hash: password_hash,
             many_balances: 0,
             version: "1.0",
         }

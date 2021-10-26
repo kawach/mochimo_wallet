@@ -5,9 +5,7 @@ import {connect} from "react-redux";
 import {SET_WALLET} from "../../redux/actions";
 import {bindActionCreators} from "redux";
 import {Link} from "react-router-dom";
-import sha256 from 'crypto-js/sha256';
-import CryptoJs from 'crypto-js'
-import {hash} from "../../utils/walletServices";
+import {hash, xorArray} from "../../utils/walletServices";
 
 const New_Wallet = (props, dispatch) => {
     const [seed, setSeed] = useState(undefined)
@@ -15,6 +13,7 @@ const New_Wallet = (props, dispatch) => {
     const [isActive, setIsActive] = useState(false)
     const mnemonicWords = require('mnemonic-words');
     const random = Math.floor(Math.random() * mnemonicWords.length);
+
     const handleClick = event => {
         switch (event.target.id) {
             case "random" : {
@@ -22,16 +21,19 @@ const New_Wallet = (props, dispatch) => {
                 break
             }
             case "confirmSeed": {
-                console.log(pass)
                 setIsActive(!isActive)
                 break
             }
             case "submit": {
-                props.SET_WALLET(null,hash(seed),pass)
+                let hashed_char_array_seed = Array.from(hash(seed))
+                let hashed_char_array_pass = Array.from(pass)
+                let secret = xorArray(hashed_char_array_seed, hashed_char_array_pass)
+                props.SET_WALLET(secret,pass)
                 setIsActive(!isActive)
             }
         }
     }
+
     const handleChange = event => {
         switch (event.target.id) {
             case "password": {

@@ -1,23 +1,40 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import { useHistory } from "react-router-dom";
+import {hash} from "../../utils/walletServices"
+import {bindActionCreators} from "redux";
+import {SET_WALLET} from "../../redux/actions";
+import {connect} from "react-redux";
 
 const Login = (props) => {
     const [selected, setSelected] = useState()
-    const [file, setFile] = useState()
+    const [file, setFile] = useState(null)
+    const [handleFile, setHandleFile] = useState(null)
     const [input, setInput] = useState()
+    const history = useHistory()
 
     const handleClick = (event) => {
         switch (event.target.id) {
             case "submit" : {
-                event.target.classList.toggle("is-loading")
-                let reader = new FileReader()
-                reader.readAsText(file)
-                reader.onload = () => {
-                    // console.log(test.result)
+                let wallet = handleFile
+                if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
+                    props.SET_WALLET(wallet.wallet_secret, wallet.wallet_password_hash)
+                    history.push("/logged")
                 }
-                event.target.classList.toggle("is-loading")
             }
         }
     }
+
+    useEffect(()=>{
+        console.log("file changed")
+        let blob = file ? file : new Blob([])
+        console.log("blob", blob)
+        let reader = new FileReader()
+        reader.readAsText(blob)
+        reader.onload = (data)=>{
+            return data.target.result ?
+            setHandleFile(JSON.parse(data.target.result)) : null
+        }
+    },[file])
 
     const handleInput = (event) => {
         event.target.files ? setFile(event.target.files[0]) : setInput(event.target.value)
@@ -64,4 +81,11 @@ const Login = (props) => {
     )
 }
 
-export {Login}
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+        ...bindActionCreators({SET_WALLET}, dispatch),
+    }
+}
+
+export default connect(null,mapDispatchToProps)(Login)
