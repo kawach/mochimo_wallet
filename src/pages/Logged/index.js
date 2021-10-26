@@ -1,7 +1,5 @@
 import {useSelector} from "react-redux";
 import {BrowserRouter as Router, Switch, useRouteMatch} from "react-router-dom";
-import _ from 'lodash'
-import {Card} from "../../components/Card";
 import Home from "./Home";
 
 const Logged = () => {
