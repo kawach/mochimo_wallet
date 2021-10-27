@@ -1,4 +1,5 @@
 import {SET_WALLET} from "../actionTypes";
+import {SET_BALANCE} from "../actionTypes";
 
 const initialState = {
     password_hash: undefined,
@@ -33,9 +34,17 @@ const initialState = {
 }
 
 export default function (state = initialState, action) {
+    console.log(state)
     switch (action.type) {
         case SET_WALLET:
             return action.payload
+        case SET_BALANCE:
+            return {
+                ...state, many_balances: state.many_balances + 1, balances: {
+                    ...state.balances,
+                    [state.many_balances + 1]: action.payload
+                }
+            }
         default:
             return null
     }

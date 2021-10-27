@@ -15,14 +15,14 @@ export const SET_BALANCE = (id,balance_hash,amount_nmc,blockStatus,tag,wots_addr
     return {
         type: "SET_BALANCE",
         payload: {
-            id: undefined,
-            status: undefined,
-            balance_hash: undefined,
-            amount_nmcm: undefined,
-            blockStatus: undefined,
-            tag: undefined,
-            wots_address: undefined,
-            many_spent: undefined,
+            id: id,
+            status: "untagged",
+            balance_hash: balance_hash,
+            amount_nmcm: amount_nmc,
+            blockStatus: blockStatus,
+            tag: tag,
+            wots_address: wots_address,
+            many_spent: many_spent,
         }
     }
 }

@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Switch,Route} from "react-router-dom";
 import {connect} from "react-redux";
 import Login from "./pages/home/Login";
 import New_Wallet from "./pages/New/new";
-import {Logged} from "./pages/Logged";
+import Logged from "./pages/Logged";
 
 function App(props) {
     const isAuthenticated = props.wallet ? props.wallet : undefined

@@ -76,7 +76,7 @@ const New_Wallet = (props, dispatch) => {
                     </div>
                 </div>
             </section>
-            <Modal isActive={isActive} setActive={setIsActive} content={seed} save={handleClick}>
+            <Modal isActive={isActive} setActive={setIsActive} content={seed ? seed.toString() : null} save={handleClick}>
                 <Link to={"/logged"} className="button is-success" onClick={handleClick} id={"submit"}>
                     Words Saved
                 </Link>

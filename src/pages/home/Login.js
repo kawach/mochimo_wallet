@@ -17,7 +17,7 @@ const Login = (props) => {
             case "submit" : {
                 let wallet = handleFile
                 if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
-                    props.SET_WALLET(wallet.wallet_secret, wallet.wallet_password_hash)
+                    props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash)
                     history.push("/logged")
                 }
             }

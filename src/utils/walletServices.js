@@ -14,4 +14,7 @@ const xorArray = (seed_bytes, password_bytes) => {
     return encrypted_seed;
 }
 
+const getBalance = async (tag) => {
+    await fetch("")
+}
 export {hash, xorArray}

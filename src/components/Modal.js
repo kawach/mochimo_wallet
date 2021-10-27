@@ -1,10 +1,11 @@
 import {useState} from "react";
 import {isArray} from "underscore";
+import {render} from "react-dom";
+import {isUndefined} from "lodash/lang";
 
 const Modal = (props)=> {
     let isActive = props.isActive ? "is-active" : "none"
     const [active, setActive] = useState()
-    let content = props.content ? props.content.toString() : "Mnemonic error"
     return(
         <div className={isActive + " modal"}>
             <div className="modal-background" onClick={()=>{props.setActive(!props.isActive)}}></div>
@@ -14,7 +15,7 @@ const Modal = (props)=> {
                     <button className="delete" aria-label="close" onClick={()=>{props.setActive(!props.isActive)}}></button>
                 </header>
                 <section className="modal-card-body">
-                    <p> {content} </p>
+                    {props.content}
                 </section>
                 <footer className="modal-card-foot">
                     {props.children}
