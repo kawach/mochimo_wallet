@@ -4,24 +4,45 @@ import {hash} from "../../utils/walletServices"
 import {bindActionCreators} from "redux";
 import {SET_WALLET} from "../../redux/actions";
 import {connect} from "react-redux";
+import FileInput from "../../components/fileInput";
+import {Input} from "../../components/input";
+import Textarea from "../../components/Textarea";
 
 const Login = (props) => {
     const [selected, setSelected] = useState()
     const [file, setFile] = useState(null)
     const [handleFile, setHandleFile] = useState(null)
     const [input, setInput] = useState()
+    const [method, setMethod] = useState("file")
     const history = useHistory()
 
     const handleClick = (event) => {
         switch (event.target.id) {
             case "submit" : {
-                let wallet = handleFile
-                if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
-                    props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash)
-                    history.push("/logged")
+                switch (method) {
+                    case "file": {
+                        let wallet = handleFile
+                        if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
+                            props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash)
+                            history.push("/logged")
+                        }
+                        break
+                    }
+                    case "recovery":{
+                        console.log(Buffer.from(hash(Buffer.from(input).toString())).toString("binary"))
+                    }
                 }
             }
+            case "recovery":{
+                setMethod("recovery")
+                break
+            }
+            case "file":{
+                setMethod("file")
+                break
+            }
         }
+
     }
 
     useEffect(()=>{
@@ -51,22 +72,7 @@ const Login = (props) => {
                             <li><a id={'recovery'}>Mnemonic phrase</a></li>
                         </ul>
                     </div>
-                    <div className="file has-name is-fullwidth">
-                        <label className="file-label">
-                            <input className="file-input" type="file" name="resume" onChange={handleInput}/>
-                            <span className="file-cta">
-                              <span className="file-icon">
-                                <i className="fas fa-upload"></i>
-                              </span>
-                              <span className="file-label">
-                                Choose a file…
-                              </span>
-                            </span>
-                            <span className="file-name">
-                              {file ? file.name : "load wallet file"}
-                            </span>
-                        </label>
-                    </div>
+                    {method === "file" ? <FileInput handleInput={handleInput} file={file}/> : <Textarea value={input} handleChange={handleInput}/>}
                     <div className="field">
                         <label className="label">Password</label>
                         <div className="control">

@@ -6,6 +6,7 @@ import {SET_WALLET} from "../../redux/actions";
 import {bindActionCreators} from "redux";
 import {Link} from "react-router-dom";
 import {hash, xorArray} from "../../utils/walletServices";
+import Textarea from "../../components/Textarea";
 
 const New_Wallet = (props, dispatch) => {
     const [seed, setSeed] = useState(undefined)
@@ -56,12 +57,7 @@ const New_Wallet = (props, dispatch) => {
             <section className="hero">
                 <div className="hero-body">
                     <div className={"box"}>
-                        <div className="field">
-                            <label className="label">You're seed</label>
-                            <div className="control">
-                                <textarea className="textarea" placeholder="Textarea" value={seed}/>
-                            </div>
-                        </div>
+                        <Textarea value={seed}/>
                         <button className={"button is-primary"} onClick={handleClick} id={"random"}> Generate random
                             seed
                         </button>
