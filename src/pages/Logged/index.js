@@ -1,9 +1,16 @@
 import {useSelector} from "react-redux";
-import {BrowserRouter as Router, Switch, useRouteMatch} from "react-router-dom";
+import {BrowserRouter as Router, Link, Switch, useRouteMatch} from "react-router-dom";
 import Home from "./Home";
+import {Modal} from "../../components/Modal";
+import {useState} from "react";
+import _ from "lodash";
+import {hash, xorArray} from "../../utils/walletServices";
 
 const Logged = () => {
+
+    const [isActive, setIsActive] = useState()
     const wallet = useSelector(({wallet}) => wallet)
+    const {path, url} = useRouteMatch()
 
     const handleDownload = () => {
         const fileName = "wallet";
@@ -16,7 +23,17 @@ const Logged = () => {
         document.body.removeChild(el);
     }
 
-    let {path, url} = useRouteMatch()
+    const handleClick = (event) => {
+        switch (event.target.id) {
+            case "newBalance": {
+                setIsActive(!isActive)
+                break
+            }
+        }
+    }
+
+    console.log(isActive)
+
     return (
         <Router>
             <section className="hero">
@@ -25,7 +42,7 @@ const Logged = () => {
                         <div className={"level-item p-5"}>
                             <div className={"buttons"}>
                             <button className="button is-medium" onClick={handleDownload}> Download </button>
-                            <button className="button is-medium"> New Balance</button>
+                            <button className="button is-medium" id={"newBalance"} onClick={handleClick}> New Balance</button>
                             </div>
                         </div>
                     </div>
@@ -36,6 +53,11 @@ const Logged = () => {
                     </Switch>
                 </div>
             </section>
+            <Modal isActive={isActive} setActive={setIsActive} content={<p> test </p>} save={handleClick}>
+                <Link to={"/logged"} className="button is-success">
+                    Create
+                </Link>
+            </Modal>
         </Router>
     )
 }
