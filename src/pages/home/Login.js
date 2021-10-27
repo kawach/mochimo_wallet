@@ -23,16 +23,20 @@ const Login = (props) => {
                     case "file": {
                         let wallet = handleFile
                         if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
+                            console.log("test")
                             props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash)
-                            history.push("/logged")
+                            history.push('/logged')
                         }
                         break
                     }
                     case "recovery":{
-                        console.log(Buffer.from(hash(Buffer.from(input).toString())).toString("binary"))
+                        props.SET_WALLET(hash(input).toUpperCase())
+                        history.push('/logged')
+                        break
                     }
                 }
             }
+            break
             case "recovery":{
                 setMethod("recovery")
                 break
@@ -72,14 +76,8 @@ const Login = (props) => {
                             <li><a id={'recovery'}>Mnemonic phrase</a></li>
                         </ul>
                     </div>
-                    {method === "file" ? <FileInput handleInput={handleInput} file={file}/> : <Textarea value={input} handleChange={handleInput}/>}
-                    <div className="field">
-                        <label className="label">Password</label>
-                        <div className="control">
-                            <input className="input" type="password" placeholder="********" onChange={handleInput}
-                                   id={"input"}/>
-                        </div>
-                    </div>
+                    {/* let {id,label, type, placeholder, onChange, handleBlur} = props*/}
+                    {method === "file" ? <> <FileInput handleInput={handleInput} file={file}/>  <Input type={"password"} id={'input'} label={"Password"} placeholder={"*******"} onChange={handleInput}/> </> : <Textarea value={input} handleChange={handleInput}/>}
                     <button className="button is-primary" onClick={handleClick} id={"submit"}>Sign in</button>
                 </div>
             </div>
