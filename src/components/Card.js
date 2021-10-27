@@ -1,7 +1,7 @@
-const Card = () => {
+const Card = (props) => {
+    console.log(props)
   return (
-      <div className={"container"}>
-          <div className="card">
+          <div className="card mb-5">
               <header className="card-header">
                   <p className="card-header-title">
                       Card header
@@ -23,7 +23,6 @@ const Card = () => {
                   </div>
               </div>
           </div>
-      </div>
   )
 }
 

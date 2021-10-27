@@ -23,8 +23,7 @@ const Login = (props) => {
                     case "file": {
                         let wallet = handleFile
                         if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
-                            console.log("test")
-                            props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash)
+                            props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash,wallet.many_balances, wallet.balances)
                             history.push('/logged')
                         }
                         break
