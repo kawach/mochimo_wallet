@@ -4,13 +4,15 @@ import Home from "./Home";
 import {Modal} from "../../components/Modal";
 import {useState} from "react";
 import {Input} from "../../components/input";
-import {hash, xorArray} from "../../utils/walletServices";
+import {generateString, generateWots, hash} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
+const { Wots } = require('mochimo');
 
 const Logged = (props) => {
 
-    const [tagInput, setTagInput] = useState()
+    const [tagInput, setTagInput] = useState(undefined)
+    const [spentInput, setSpentInput] = useState(undefined)
     const [inputWallet_Secret, setInputWallet_Secret] = useState()
     const [isActive, setIsActive] = useState()
     const wallet = useSelector(({wallet}) => wallet)
@@ -34,8 +36,17 @@ const Logged = (props) => {
                 break
             }
             case "balanceCreate" :{
-                props.SET_BALANCE("test","test","test","test","test","test","test")
+                // const wots = Wots.generate(hash(wallet.secret + wallet.many_balances).toUpperCase());
+                // const addresse =  Buffer.from(wots.address).toString('hex')
+                // const wots = generateWots(hash(wallet.secret + wallet.many_balances))
+                    // wots[0]
+                const test = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput)
+                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",tagInput,test[0],0)
                 setIsActive(!isActive)
+                break
+            }
+            case "random" : {
+                setTagInput(generateString(12))
                 break
             }
         }
@@ -47,9 +58,13 @@ const Logged = (props) => {
                 setTagInput(event.target.value)
                 break
             }
-            case "walletPass":
+            case "walletPass": {
                 setInputWallet_Secret(event.target.value)
                 break
+            }
+            case "spent":{
+                setSpentInput(event.target.value)
+            }
         }
     }
 
@@ -85,12 +100,14 @@ const Logged = (props) => {
                 </div>
             </section>
             <Modal isActive={isActive} setActive={setIsActive} save={handleClick}
+                   title={"Create a new balance"}
                    content={
                        <>
                            <Input id={"tag"} label={"Tag"} type={"text"} placeholder={"Enter a tag"}
-                                  onChange={handleChange}/>,
-                           <Input id={"walletPass"} label={"Wallet Password"} type={"password"} placeholder={"********"}
-                                  onChange={handleChange} handleBlur={handleBlur}/>
+                                  onChange={handleChange} value={tagInput}/>
+                           <Input id={"spent"} label={"spent"} type={"text"} placeholder={"Enter spent times"}
+                                  onChange={handleChange} value={spentInput}/>
+                           <button onClick={handleClick} id={"random"} className={"button is-info"}> random tag </button>
                        </>
                    }
             >

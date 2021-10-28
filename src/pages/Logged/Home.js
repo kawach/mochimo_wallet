@@ -1,16 +1,15 @@
 import {connect, useSelector} from "react-redux";
-import {Card} from "../../components/Card";
+import {Balance} from "../../Views/Logged/Balance";
 
 const Home = () => {
 
     const wallet = useSelector(({wallet}) => wallet)
-
     return wallet.balances ? (
         <div className={"box"}>
             <h1> Balances </h1>
             {
                wallet.many_balances > 0 ? Object.entries(wallet.balances).map((value, index)=>{
-                   return <Card balance={value}/>
+                   return <Balance balance={value} key={value[1].id}/>
                }) : ("")
             }
         </div>

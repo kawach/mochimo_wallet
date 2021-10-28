@@ -14,7 +14,7 @@ export const Navbar = (props) => {
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <Link to={"/"}>
-                    <img src={logo} className={""}/>
+                    <img src={logo} style={{height: "50px"}}/>
                 </Link>
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false"
                    data-target="navbar-menu" onClick={handleClick}>

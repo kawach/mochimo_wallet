@@ -11,7 +11,7 @@ const Modal = (props)=> {
             <div className="modal-background" onClick={()=>{props.setActive(!props.isActive)}}></div>
             <div className="modal-card">
                 <header className="modal-card-head">
-                    <p className="modal-card-title">Did you saved you're mnemonic sentence ?</p>
+                    <p className="modal-card-title">{props.title}</p>
                     <button className="delete" aria-label="close" onClick={()=>{props.setActive(!props.isActive)}}></button>
                 </header>
                 <section className="modal-card-body">

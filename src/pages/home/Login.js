@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import { useHistory } from "react-router-dom";
-import {hash} from "../../utils/walletServices"
+import {hash, xorArray} from "../../utils/walletServices"
 import {bindActionCreators} from "redux";
 import {SET_WALLET} from "../../redux/actions";
 import {connect} from "react-redux";
@@ -15,6 +15,7 @@ const Login = (props) => {
     const [input, setInput] = useState()
     const [method, setMethod] = useState("file")
     const history = useHistory()
+    // eslint-disable-next-line no-unused-vars
 
     const handleClick = (event) => {
         switch (event.target.id) {
@@ -23,13 +24,13 @@ const Login = (props) => {
                     case "file": {
                         let wallet = handleFile
                         if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
-                            props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash,wallet.many_balances, wallet.balances)
+                            props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash,wallet.secret,wallet.many_balances, wallet.balances)
                             history.push('/logged')
                         }
                         break
                     }
                     case "recovery":{
-                        props.SET_WALLET(hash(input).toUpperCase())
+                        props.SET_WALLET("","",hash(input))
                         history.push('/logged')
                         break
                     }
@@ -63,7 +64,7 @@ const Login = (props) => {
     const handleInput = (event) => {
         event.target.files ? setFile(event.target.files[0]) : setInput(event.target.value)
     }
-
+    console.log(input)
     return (
         <section className="hero">
             <div className="hero-body">
@@ -75,8 +76,7 @@ const Login = (props) => {
                             <li><a id={'recovery'}>Mnemonic phrase</a></li>
                         </ul>
                     </div>
-                    {/* let {id,label, type, placeholder, onChange, handleBlur} = props*/}
-                    {method === "file" ? <> <FileInput handleInput={handleInput} file={file}/>  <Input type={"password"} id={'input'} label={"Password"} placeholder={"*******"} onChange={handleInput}/> </> : <Textarea value={input} handleChange={handleInput}/>}
+                    {method === "file" ? <> <FileInput handleInput={handleInput} file={file}/>  <Input type={"password"} id={'input'} label={"Password"} placeholder={"*******"} onChange={handleInput}/> </> : <Textarea value={input} onChange={handleInput}/>}
                     <button className="button is-primary" onClick={handleClick} id={"submit"}>Sign in</button>
                 </div>
             </div>

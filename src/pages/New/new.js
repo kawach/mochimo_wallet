@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import _ from 'lodash'
 import {Modal} from "../../components/Modal";
 import {connect} from "react-redux";
@@ -9,8 +9,9 @@ import {hash, xorArray} from "../../utils/walletServices";
 import Textarea from "../../components/Textarea";
 
 const New_Wallet = (props, dispatch) => {
-    const [seed, setSeed] = useState(undefined)
+    const [mnemonic, setMnemonic] = useState(undefined)
     const [pass, setPass] = useState()
+    const [hashedPass, setHashedPass] = useState()
     const [isActive, setIsActive] = useState(false)
     const mnemonicWords = require('mnemonic-words');
     const random = Math.floor(Math.random() * mnemonicWords.length);
@@ -18,7 +19,7 @@ const New_Wallet = (props, dispatch) => {
     const handleClick = event => {
         switch (event.target.id) {
             case "random" : {
-                setSeed(_.sampleSize(mnemonicWords, 12))
+                setMnemonic(_.sampleSize(mnemonicWords, 12))
                 break
             }
             case "confirmSeed": {
@@ -26,10 +27,11 @@ const New_Wallet = (props, dispatch) => {
                 break
             }
             case "submit": {
-                let hashed_char_array_seed = Array.from(hash(seed))
-                let hashed_char_array_pass = Array.from(pass)
-                let secret = xorArray(hashed_char_array_seed, hashed_char_array_pass)
-                props.SET_WALLET(secret,pass)
+                let hashed_char_array_seed = Array.from(hash(mnemonic).toUpperCase())
+                let hashed_char_array_pass = Array.from(hashedPass)
+                let _public = _.xor(hashed_char_array_seed, hashed_char_array_pass)
+                let secret = hash(mnemonic).toUpperCase()
+                props.SET_WALLET(_public,hashedPass,secret)
                 setIsActive(!isActive)
             }
         }
@@ -39,25 +41,25 @@ const New_Wallet = (props, dispatch) => {
         switch (event.target.id) {
             case "password": {
                 setPass(event.target.value)
+                break
+            }
+            case "mnemonic": {
+                setMnemonic(event.target.value)
+                break
             }
         }
     }
 
-    const handleBlur = (event) => {
-        switch (event.target.id) {
-            case "password": {
-                return pass ?
-                setPass(hash(pass)) : null
-            }
-        }
-    }
+    useEffect(()=>{
+        setHashedPass(hash(pass))
+    },[pass])
 
     return (
         <div className={"container"}>
             <section className="hero">
                 <div className="hero-body">
                     <div className={"box"}>
-                        <Textarea value={seed}/>
+                        <Textarea value={mnemonic} onChange={handleChange} id={"mnemonic"}/>
                         <button className={"button is-primary"} onClick={handleClick} id={"random"}> Generate random
                             seed
                         </button>
@@ -65,14 +67,16 @@ const New_Wallet = (props, dispatch) => {
                             <label className="label">Password</label>
                             <div className="control">
                                 <input className="input" type="password" placeholder="********" id={"password"}
-                                       onChange={handleChange} onBlur={handleBlur} />
+                                       onChange={handleChange} />
                             </div>
                         </div>
                         <button className="button is-primary" onClick={handleClick} id={"confirmSeed"}>Sign in</button>
                     </div>
                 </div>
             </section>
-            <Modal isActive={isActive} setActive={setIsActive} content={seed ? seed.toString() : null} save={handleClick}>
+            <Modal isActive={isActive} setActive={setIsActive} content={mnemonic ? mnemonic.toString() : null} save={handleClick}
+                title={"Save you're mnemonic words !"}
+                >
                 <Link to={"/logged"} className="button is-success" onClick={handleClick} id={"submit"}>
                     Words Saved
                 </Link>
