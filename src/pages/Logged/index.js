@@ -41,7 +41,7 @@ const Logged = (props) => {
                 // const wots = generateWots(hash(wallet.secret + wallet.many_balances))
                     // wots[0]
                 const test = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput)
-                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",tagInput,test[0],0)
+                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",tagInput,test,0)
                 setIsActive(!isActive)
                 break
             }
@@ -94,7 +94,7 @@ const Logged = (props) => {
                     </div>
                     <Switch>
                         <Router exact={false} path={url}>
-                            <Home/>
+                            <Home />
                         </Router>
                     </Switch>
                 </div>
