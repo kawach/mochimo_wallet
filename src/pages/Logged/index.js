@@ -40,8 +40,8 @@ const Logged = (props) => {
                 // const addresse =  Buffer.from(wots.address).toString('hex')
                 // const wots = generateWots(hash(wallet.secret + wallet.many_balances))
                     // wots[0]
-                const test = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput)
-                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",tagInput,test,0)
+                const wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput)
+                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",tagInput,wots,0)
                 setIsActive(!isActive)
                 break
             }

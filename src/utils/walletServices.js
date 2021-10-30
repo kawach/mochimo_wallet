@@ -63,7 +63,6 @@ function generateWots(seed,tag = undefined){
 }
 
 function compute_transaction(source_wots, source_secret, change_wots, destination_wots, sent_amount, remaining_amount, fee) {
-    console.log(source_wots.length, change_wots.length, destination_wots.length)
     //the lenght in bytes the sign message will have is 6456 bytes
     function generate_zeros(how_much) {
         let zeros = [];

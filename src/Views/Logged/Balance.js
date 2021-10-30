@@ -3,6 +3,8 @@ import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
 import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
+import {bindActionCreators} from "redux";
+import {SET_BALANCE} from "../../redux/actions";
 
 const {Wots} = require('mochimo')
 
@@ -18,7 +20,7 @@ const Balance = (props) => {
     const wallet = useSelector(({wallet}) => wallet)
     const wots = Buffer.from(balance[1].wots_address[0]).toString("hex")
     // console.log(balance[1].wots_address[0])
-    console.log(wots)
+    console.log(balance[1])
     const handleClick = () => {
         let source_wots = balance[1].wots_address[0]
         let source_secret = balance[1].wots_address[1]
@@ -27,14 +29,28 @@ const Balance = (props) => {
         let remaining_amount = currentBalance - (amount + TX_fee);
 
         let transaction_array = compute_transaction(balance[1].wots_address[0], balance[1].wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
-        console.log(_arrayBufferToBase64(transaction_array))
-        fetch("http://api.mochimo.org:8888/api/v2/push", {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: {"transaction":_arrayBufferToBase64(transaction_array),"recipients":"5"},
-            method: "POST"
-        }).then(res => console.log(res))
+        let transaction = _arrayBufferToBase64(transaction_array)
+        // fetch("http://api.mochimo.org:8888/api/v2/push", {
+        //     body: JSON.stringify({"transaction":_arrayBufferToBase64(transaction_array),"recipients":"5"}),
+        //     method: "POST"
+        // }).then(res => res.text()).then(res => console.log(res))
+        let url = "http://api.mochimo.org:8888/push";
+        let data = JSON.stringify({"transaction":transaction})
+        console.log(data)
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200){
+                    props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",balance[1].tag ? balance[1].tag : "",change_wots,0)
+                }
+                console.log(xhr.responseText);
+            }};
+        xhr.send(data);
+
     };
 
     const handleChange = (event) => {
@@ -56,8 +72,6 @@ const Balance = (props) => {
     useEffect(() => {
         getBalance(wots).then(res => res.json()).then(res => setCurrentBalance(res['quorum'][0].balance))
     }, [wots])
-
-    console.log(typeof amount)
 
     return (
         <div className="card mb-5">
@@ -123,8 +137,15 @@ const Balance = (props) => {
     )
 }
 
+function mapDispatchToProps(dispatch) {
+    return {
+        dispatch,
+        ...bindActionCreators({SET_BALANCE}, dispatch),
+    }
+}
+
 export default connect((state) => {
     return state
-}, null)(Balance)
+}, mapDispatchToProps)(Balance)
 
 
