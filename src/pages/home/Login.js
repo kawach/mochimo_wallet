@@ -50,9 +50,7 @@ const Login = (props) => {
     }
 
     useEffect(()=>{
-        console.log("file changed")
         let blob = file ? file : new Blob([])
-        console.log("blob", blob)
         let reader = new FileReader()
         reader.readAsText(blob)
         reader.onload = (data)=>{
@@ -64,7 +62,6 @@ const Login = (props) => {
     const handleInput = (event) => {
         event.target.files ? setFile(event.target.files[0]) : setInput(event.target.value)
     }
-    console.log(input)
     return (
         <section className="hero">
             <div className="hero-body">

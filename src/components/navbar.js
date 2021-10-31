@@ -9,7 +9,6 @@ export const Navbar = (props) => {
         let menu = document.getElementById(target)
         menu.classList.toggle('is-active')
     }
-    console.log(props.isAuthenticated)
     return !props.isAuthenticated ? (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">

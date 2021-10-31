@@ -1,59 +1,58 @@
-import {_arrayBufferToBase64, compute_transaction, generateWots, getBalance, hash} from "../../utils/walletServices";
+import {
+    _arrayBufferToBase64,
+    compute_transaction,
+    generateWots,
+    getBalance,
+    hash,
+    resolveTag
+} from "../../utils/walletServices";
 import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
 import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
-import {SET_BALANCE} from "../../redux/actions";
+import {SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
 
 const {Wots} = require('mochimo')
 
 const Balance = (props) => {
     const {balance} = props
-    // console.log(Buffer.from(balance[1].wots_address).toString("hex"))
-    // getBalance(balance[1].wots_address).then(res => res).then(res => console.log(res))
     const [isActive, setIsActive] = useState();
+    const [onHover, setHover] = useState("");
     const [amount, setAmount] = useState();
     const [receiver, setReceiver] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [currentBalance, setCurrentBalance] = useState();
     const wallet = useSelector(({wallet}) => wallet)
     const wots = Buffer.from(balance[1].wots_address[0]).toString("hex")
-    // console.log(balance[1].wots_address[0])
-    console.log(balance[1])
-    const handleClick = () => {
-        let source_wots = balance[1].wots_address[0]
-        let source_secret = balance[1].wots_address[1]
-        const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances + 1) + 0), balance[1].tag)
-        let TX_fee = 500
-        let remaining_amount = currentBalance - (amount + TX_fee);
 
-        let transaction_array = compute_transaction(balance[1].wots_address[0], balance[1].wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
-        let transaction = _arrayBufferToBase64(transaction_array)
-        // fetch("http://api.mochimo.org:8888/api/v2/push", {
-        //     body: JSON.stringify({"transaction":_arrayBufferToBase64(transaction_array),"recipients":"5"}),
-        //     method: "POST"
-        // }).then(res => res.text()).then(res => console.log(res))
-        let url = "http://api.mochimo.org:8888/push";
-        let data = JSON.stringify({"transaction":transaction})
-        console.log(data)
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", url);
-
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200){
-                    //(id,balance_hash,amount_nmc,blockStatus,tag,wots_address,many_spent)
-                    props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,null,balance[1].tag ? balance[1].tag : "","Activated",change_wots,0)
-                }
-                console.log(xhr.responseText);
-            }};
-        xhr.send(data);
+    const handleClick = (event) => {
+        switch (event.target.id) {
+            case "send": {
+                let source_wots = balance[1].wots_address[0]
+                let source_secret = balance[1].wots_address[1]
+                const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances + 1) + 0), balance[1].tag)
+                let TX_fee = 500
+                let remaining_amount = currentBalance - (amount + TX_fee);
+                let transaction_array = compute_transaction(balance[1].wots_address[0], balance[1].wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
+                let transaction = _arrayBufferToBase64(transaction_array)
+                let url = "http://api.mochimo.org:8888/push";
+                let data = JSON.stringify({"transaction":transaction})
+                let xhr = new XMLHttpRequest();
+                xhr.open("POST", url);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200){
+                            props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,null,balance[1].tag ? balance[1].tag : "","Activated",change_wots,0)
+                        }
+                    }};
+                xhr.send(data);
+            }
+        }
 
     };
-
+    // console.log(balance[1].status === "pending" ? (resolveTag(balance[1].tag).then(res =>{ if (res.unanimous === true){}})) : "")
     const handleChange = (event) => {
         switch (event.target.id) {
             case 'amount': {
@@ -70,10 +69,23 @@ const Balance = (props) => {
             }
         }
     };
+
+    const handleHover = (event) => {
+        switch (event.type) {
+            case "mouseenter":{
+                setHover("is-active")
+                break
+            }
+            case "mouseleave":{
+                setHover("")
+                break
+            }
+        }
+    }
+
     useEffect(() => {
         getBalance(wots).then(res => res.json()).then(res => setCurrentBalance(res['quorum'][0].balance))
     }, [wots])
-
     return (
         <div className="card mb-5">
             <header className="card-header">
@@ -105,10 +117,26 @@ const Balance = (props) => {
                         </div>
                         <div className="level-item has-text-centered">
                             <div>
-                                <button className={"button"} onClick={() => {
-                                    setIsActive(!isActive)
-                                }}> Action
-                                </button>
+                                <div className={`dropdown ` + onHover} onMouseEnter={handleHover} onMouseLeave={handleHover}>
+                                    <div className="dropdown-trigger">
+                                        <button className="button" aria-haspopup="true" data-id={props.index} aria-controls="dropdown-menu">
+                                            <span>Action</span>
+                                            <span className="icon is-small">
+                                            <i className="fas fa-angle-down" aria-hidden="true"></i>
+                                             </span>
+                                        </button>
+                                        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+                                            <div className="dropdown-content">
+                                                <a href="#" className="dropdown-item" onClick={()=>{setIsActive(!isActive)}}>
+                                                    Send
+                                                </a>
+                                                <a href="#" className="dropdown-item" onClick={()=>{props.UPDATE_BALANCE(balance[1].id,balance[1])}}>
+                                                    Delete
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </nav>
@@ -130,7 +158,7 @@ const Balance = (props) => {
                        </>
                    }
             >
-                <button className="button is-success" onClick={handleClick} id={"balanceCreate"}>
+                <button className="button is-success" onClick={handleClick} id={"send"}>
                     Send
                 </button>
             </Modal>
@@ -141,7 +169,7 @@ const Balance = (props) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({SET_BALANCE}, dispatch),
+        ...bindActionCreators({SET_BALANCE,UPDATE_BALANCE}, dispatch),
     }
 }
 

@@ -1,5 +1,5 @@
-import {SET_WALLET} from "../actionTypes";
-import {SET_BALANCE} from "../actionTypes";
+import {SET_WALLET, UPDATE_BALANCE,SET_BALANCE} from "../actionTypes";
+import _ from "lodash";
 
 const initialState = {
     password_hash: undefined,
@@ -33,8 +33,7 @@ const initialState = {
     ]
 }
 
-export default function (state = initialState, action) {
-    console.log(state)
+export default function Store(state = initialState, action) {
     switch (action.type) {
         case SET_WALLET:
             return action.payload
@@ -42,9 +41,15 @@ export default function (state = initialState, action) {
             return {
                 ...state, many_balances: state.many_balances + 1, balances: {
                     ...state.balances,
-                    [state.many_balances + 1]: action.payload
+                    [state.many_balances]: action.payload
                 }
             }
+        case UPDATE_BALANCE:
+            let current = {...state}
+            console.log(current,action)
+            console.log(_.keys(state.balances))
+            delete current['balances'][action.payload.id]
+            return {...state}
         default:
             return null
     }

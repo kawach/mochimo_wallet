@@ -1,4 +1,4 @@
-export const SET_WALLET = (pub= undefined, password_hash= undefined,secret = undefined, many_balance = 0,balances) => {
+export const SET_WALLET = (pub = undefined, password_hash = undefined, secret = undefined, many_balance = 0, balances) => {
     return {
         type: "SET_WALLET",
         payload: {
@@ -13,7 +13,7 @@ export const SET_WALLET = (pub= undefined, password_hash= undefined,secret = und
     }
 }
 
-export const SET_BALANCE = (id,balance_hash,amount_nmc,blockStatus,tag,status,wots_address,many_spent) => {
+export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, status, wots_address, many_spent) => {
     return {
         type: "SET_BALANCE",
         payload: {
@@ -25,6 +25,16 @@ export const SET_BALANCE = (id,balance_hash,amount_nmc,blockStatus,tag,status,wo
             tag: tag,
             wots_address: wots_address,
             many_spent: many_spent,
+        }
+    }
+}
+
+export const UPDATE_BALANCE = (id, balance) => {
+    return {
+        type: "UPDATE_BALANCE",
+        payload: {
+            id: id,
+            balance: balance
         }
     }
 }

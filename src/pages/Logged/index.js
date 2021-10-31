@@ -78,7 +78,6 @@ const Logged = (props) => {
         }
     }
 
-    console.log(props)
     return (
         <Router>
             <section className="hero">

@@ -9,7 +9,7 @@ const Home = (props) => {
             <h1> Balances </h1>
             {
                wallet.many_balances > 0 ? Object.entries(wallet.balances).map((value, index)=>{
-                   return <Balance balance={value} key={value[1].id} manyBalances={props.manyBalance}/>
+                   return <Balance balance={value} key={value[1].id} index={index}/>
                }) : ("")
             }
         </div>

@@ -6,9 +6,12 @@ var oldhash = require("crypto-js/sha256");
 
 
 export const foutainWots = (wots) => {
-    return fetch(`https://wallet.mochimo.com/fund/${wots}`).then(res => res.text())
+    return fetch(`https://wallet.mochimo.com/fund/${wots}`).then(res => res.status === 200 ? null:res.json())
 }
 
+export const resolveTag = (tag) => {
+    return fetch(`http://api.mochimo.org:8888/net/resolve/${tag}`).then(res => res.json())
+}
 // eslint-disable-next-line no-extend-native
 String.prototype.hexToByteArray = function() {
     var result = [];
