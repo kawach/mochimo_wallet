@@ -5,6 +5,10 @@ import {wots_public_key_gen} from "./wots.mjs";
 var oldhash = require("crypto-js/sha256");
 
 
+export const foutainWots = (wots) => {
+    return fetch(`https://wallet.mochimo.com/fund/${wots}`).then(res => res.text())
+}
+
 // eslint-disable-next-line no-extend-native
 String.prototype.hexToByteArray = function() {
     var result = [];
@@ -14,12 +18,12 @@ String.prototype.hexToByteArray = function() {
     return result;
 }
 
-const hash = (value,salt = null)=>{
+export const hash = (value,salt = null)=>{
     return oldhash(value).toString(CryptoJs.enc.Hex).toUpperCase()
 }
 
 
-const xorArray = (seed_bytes, password_bytes) => {
+export const xorArray = (seed_bytes, password_bytes) => {
     let encrypted_seed = [];
     for (let iter = 0; iter < 32; iter++) {
         encrypted_seed.push(seed_bytes[iter] ^ password_bytes[iter])
@@ -27,11 +31,11 @@ const xorArray = (seed_bytes, password_bytes) => {
     return encrypted_seed;
 }
 
-const getBalance = async (wots) => {
+export const getBalance = async (wots) => {
     return await fetch(`http://api.mochimo.org:8888/net/balance/${wots}`).then(res => res)
 }
 
-const generateString = (length) => {
+export const generateString = (length) => {
 
     let result = ['0', '2'];
     let hexRef = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
@@ -114,7 +118,8 @@ function _arrayBufferToBase64( buffer ) {
         if (!a) return a;
         // eslint-disable-next-line no-unused-expressions
         do c = a.charCodeAt(k++), d = a.charCodeAt(k++), e = a.charCodeAt(k++), j = c << 16 | d << 8 | e,
-            f = 63 & j >> 18, g = 63 & j >> 12, h = 63 & j >> 6, i = 63 & j, n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i); while (k < a.length);
+            f = 63 & j >> 18, g = 63 & j >> 12, h = 63 & j >> 6, i = 63 & j, n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i);
+        while (k < a.length);
         return m = n.join(""), o = a.length % 3, (o ? m.slice(0, o - 3) :m) + "===".slice(o || 3);
     }
     var binary = ''; var bytes = new Uint8Array( buffer );
@@ -125,4 +130,4 @@ function _arrayBufferToBase64( buffer ) {
     return b2a( binary );
 }
 
-export {hash, xorArray,generateString, getBalance,generateWots, compute_transaction, _arrayBufferToBase64}
+export {generateWots, compute_transaction, _arrayBufferToBase64}

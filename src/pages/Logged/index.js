@@ -4,9 +4,10 @@ import Home from "./Home";
 import {Modal} from "../../components/Modal";
 import {useState} from "react";
 import {Input} from "../../components/input";
-import {generateString, generateWots, hash} from "../../utils/walletServices";
+import {foutainWots, generateString, generateWots, hash} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
+import {isEmpty} from "lodash/lang";
 const { Wots } = require('mochimo');
 
 const Logged = (props) => {
@@ -35,15 +36,15 @@ const Logged = (props) => {
                 setIsActive(!isActive)
                 break
             }
-            case "balanceCreate" :{
-                // const wots = Wots.generate(hash(wallet.secret + wallet.many_balances).toUpperCase());
-                // const addresse =  Buffer.from(wots.address).toString('hex')
-                // const wots = generateWots(hash(wallet.secret + wallet.many_balances))
-                    // wots[0]
-                const wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput)
-                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",tagInput,wots,0)
-                setIsActive(!isActive)
-                break
+            case "balanceCreate" : {
+                const wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput);
+                return tagInput ? foutainWots(Buffer.from(wots[0]).toString("hex")).then((res)=>{
+                   return isEmpty(res) ? (props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,"test",tagInput,"pending",wots,0), setIsActive(!isActive))
+                       : (res = JSON.parse(res), res.statuscode)
+                }) : (
+                    props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,"test",tagInput,"untagged",wots,0),
+                        setIsActive(!isActive)
+                )
             }
             case "random" : {
                 setTagInput(generateString(12))

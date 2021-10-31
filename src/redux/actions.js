@@ -13,12 +13,12 @@ export const SET_WALLET = (pub= undefined, password_hash= undefined,secret = und
     }
 }
 
-export const SET_BALANCE = (id,balance_hash,amount_nmc,blockStatus,tag,wots_address,many_spent) => {
+export const SET_BALANCE = (id,balance_hash,amount_nmc,blockStatus,tag,status,wots_address,many_spent) => {
     return {
         type: "SET_BALANCE",
         payload: {
             id: id,
-            status: "untagged",
+            status: status,
             balance_hash: balance_hash,
             amount_nmcm: amount_nmc,
             blockStatus: blockStatus,

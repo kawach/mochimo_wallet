@@ -45,7 +45,8 @@ const Balance = (props) => {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200){
-                    props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),"test","test",balance[1].tag ? balance[1].tag : "",change_wots,0)
+                    //(id,balance_hash,amount_nmc,blockStatus,tag,wots_address,many_spent)
+                    props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,null,balance[1].tag ? balance[1].tag : "","Activated",change_wots,0)
                 }
                 console.log(xhr.responseText);
             }};
