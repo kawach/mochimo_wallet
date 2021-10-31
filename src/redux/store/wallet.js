@@ -1,4 +1,4 @@
-import {SET_WALLET, UPDATE_BALANCE,SET_BALANCE} from "../actionTypes";
+import {SET_WALLET, DELETE_BALANCE,SET_BALANCE} from "../actionTypes";
 import _ from "lodash";
 
 const initialState = {
@@ -44,10 +44,8 @@ export default function Store(state = initialState, action) {
                     [state.many_balances]: action.payload
                 }
             }
-        case UPDATE_BALANCE:
+        case DELETE_BALANCE:
             let current = {...state}
-            console.log(current,action)
-            console.log(_.keys(state.balances))
             delete current['balances'][action.payload.id]
             return {...state}
         default:

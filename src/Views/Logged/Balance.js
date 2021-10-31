@@ -11,7 +11,7 @@ import {Input} from "../../components/input";
 import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
-import {SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
+import {SET_BALANCE, DELETE_BALANCE} from "../../redux/actions";
 
 const {Wots} = require('mochimo')
 
@@ -130,7 +130,7 @@ const Balance = (props) => {
                                                 <a href="#" className="dropdown-item" onClick={()=>{setIsActive(!isActive)}}>
                                                     Send
                                                 </a>
-                                                <a href="#" className="dropdown-item" onClick={()=>{props.UPDATE_BALANCE(balance[1].id,balance[1])}}>
+                                                <a href="#" className="dropdown-item" onClick={()=>{props.DELETE_BALANCE(balance[1].id,balance[1])}}>
                                                     Delete
                                                 </a>
                                             </div>
@@ -169,7 +169,7 @@ const Balance = (props) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({SET_BALANCE,UPDATE_BALANCE}, dispatch),
+        ...bindActionCreators({SET_BALANCE,DELETE_BALANCE}, dispatch),
     }
 }
 

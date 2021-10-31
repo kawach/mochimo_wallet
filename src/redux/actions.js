@@ -29,9 +29,9 @@ export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, stat
     }
 }
 
-export const UPDATE_BALANCE = (id, balance) => {
+export const DELETE_BALANCE = (id, balance) => {
     return {
-        type: "UPDATE_BALANCE",
+        type: "DELETE_BALANCE",
         payload: {
             id: id,
             balance: balance
