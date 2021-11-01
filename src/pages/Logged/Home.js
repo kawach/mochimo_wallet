@@ -6,15 +6,14 @@ const Home = (props) => {
 
     const wallet = useSelector(({wallet}) => wallet)
     return wallet.balances ? (
-        <div className={"box"}>
-            <h1> Balances </h1>
-
+        <>
+            <h1 className={"title"}> Balances </h1>
             {
                wallet.many_balances > 0 ? Object.entries(wallet.balances).map((value, index)=>{
                    return <Balance balance={value} key={value[1].id} index={index}/>
                }) : ("")
             }
-        </div>
+        </>
     ) : (
         <div className={"box"}>
             <p> no balances </p>

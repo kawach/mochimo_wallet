@@ -8,6 +8,7 @@ import {foutainWots, generateString, generateWots, getCurrentBlock, hash} from "
 import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
+import {toast} from "react-toastify";
 
 const {Wots} = require('mochimo');
 
@@ -40,8 +41,8 @@ const Logged = (props) => {
             case "balanceCreate" : {
                 const wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput);
                 return tagInput ? foutainWots(Buffer.from(wots[0]).toString("hex")).then((res) => {
-                    return isEmpty(res) ? getCurrentBlock().then((block) => props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, tagInput, 0, wots, 0), setIsActive(!isActive))
-                        : (res = JSON.parse(res), res.statuscode) //TODO: handle this error
+                    return isEmpty(res) ? getCurrentBlock().then((block) => (toast.success(` TAG : "${tagInput}" is pending activation`),props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, tagInput, 0, wots, 0), setIsActive(!isActive)))
+                        : (toast.error(`Activation TAG : "${tagInput}" failed`)) //TODO: handle this error
                 }) : (
                     getCurrentBlock().then((block) => {
                         return (

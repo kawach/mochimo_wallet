@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import 'react-toastify/dist/ReactToastify.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import store from "./redux/index.js"
 import 'bulma';
-import bulmaCollapsible from '@creativebulma/bulma-collapsible';
 
 ReactDOM.render(
     <React.StrictMode>

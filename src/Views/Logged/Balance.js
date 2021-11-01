@@ -12,6 +12,7 @@ import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import {DELETE_BALANCE, SET_BALANCE} from "../../redux/actions";
+import {toast} from "react-toastify";
 
 const {Wots} = require('mochimo')
 
@@ -45,8 +46,12 @@ const Balance = (props) => {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
                             getCurrentBlock().then((block) => {
-                                props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, balance[1].tag ? balance[1].tag : "", "Activated", change_wots, 0)
+                                toast.success("Transaction sent")
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance[1].tag ? balance[1].tag : "", "Activated", change_wots, 0)
+                                props.DELETE_BALANCE(balance[1].id, balance[1])
                             })
+                        } else if (xhr.status !== 200) {
+                            toast.error("Failed to send transaction")
                         }
                     }
                 };
@@ -92,9 +97,14 @@ const Balance = (props) => {
     return (
         <div className="card mb-5">
             <header className="card-header">
-                <p className="card-header-title tag">
+                <p className="card-header-title" onClick={handleClick} id={"test"}>
                     TAG : {balance[1].tag}
                 </p>
+                <button className="card-header-icon" aria-label="more options">
+                      <span className="icon">
+                        <i className="fas fa-sync" aria-hidden="true"></i>
+                      </span>
+                </button>
             </header>
             <div className="card">
                 <div className="card-content">
@@ -107,7 +117,7 @@ const Balance = (props) => {
                         </div>
                         <div className="level-item has-text-centered">
                             <div>
-                                <p className="heading">Total MCM</p>
+                                <p className="heading">Total nMCM</p>
                                 <div className="title">{currentBalance ? currentBalance : (
                                     <p className={"is-loading"}></p>)}</div>
                             </div>

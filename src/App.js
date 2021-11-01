@@ -5,8 +5,10 @@ import {connect} from "react-redux";
 import Login from "./pages/home/Login";
 import New_Wallet from "./pages/New/new";
 import Logged from "./pages/Logged";
+import {toast} from "react-toastify";
 
 function App(props) {
+    toast.configure()
     const isAuthenticated = props.wallet ? props.wallet : undefined
     // console.log(isAuthenticated)
     return (
