@@ -38,6 +38,11 @@ export const getBalance = async (wots) => {
     return await fetch(`http://api.mochimo.org:8888/net/balance/${wots}`).then(res => res)
 }
 
+export const getCurrentBlock = async () => {
+    let block = fetch("http://api.mochimo.org:8888/net/chain").then(res=>res.json()).then(({block})=>block.height)
+    return block
+}
+
 export const generateString = (length) => {
 
     let result = ['0', '2'];

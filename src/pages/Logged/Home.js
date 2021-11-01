@@ -1,5 +1,6 @@
 import {connect, useSelector} from "react-redux";
 import Balance from "../../Views/Logged/Balance";
+import {getCurrentBlock} from "../../utils/walletServices";
 
 const Home = (props) => {
 

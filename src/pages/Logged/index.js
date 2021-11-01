@@ -1,14 +1,15 @@
 import {connect, useSelector} from "react-redux";
-import {BrowserRouter as Router, Link, Switch, useRouteMatch} from "react-router-dom";
+import {BrowserRouter as Router, Switch, useRouteMatch} from "react-router-dom";
 import Home from "./Home";
 import {Modal} from "../../components/Modal";
 import {useState} from "react";
 import {Input} from "../../components/input";
-import {foutainWots, generateString, generateWots, hash} from "../../utils/walletServices";
+import {foutainWots, generateString, generateWots, getCurrentBlock, hash} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
-const { Wots } = require('mochimo');
+
+const {Wots} = require('mochimo');
 
 const Logged = (props) => {
 
@@ -38,12 +39,16 @@ const Logged = (props) => {
             }
             case "balanceCreate" : {
                 const wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput);
-                return tagInput ? foutainWots(Buffer.from(wots[0]).toString("hex")).then((res)=>{
-                   return isEmpty(res) ? (props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,"test",tagInput,"pending",wots,0), setIsActive(!isActive))
-                       : (res = JSON.parse(res), res.statuscode)
+                return tagInput ? foutainWots(Buffer.from(wots[0]).toString("hex")).then((res) => {
+                    return isEmpty(res) ? (props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, "test", tagInput, 0, wots, 0), setIsActive(!isActive))
+                        : (res = JSON.parse(res), res.statuscode)
                 }) : (
-                    props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,"test",tagInput,"untagged",wots,0),
-                        setIsActive(!isActive)
+                    getCurrentBlock().then((block) => {
+                        return (
+                            props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, tagInput, "untagged", wots, 0),
+                                setIsActive(!isActive)
+                        )
+                    })
                 )
             }
             case "random" : {
@@ -63,7 +68,7 @@ const Logged = (props) => {
                 setInputWallet_Secret(event.target.value)
                 break
             }
-            case "spent":{
+            case "spent": {
                 setSpentInput(event.target.value)
             }
         }
@@ -94,7 +99,7 @@ const Logged = (props) => {
                     </div>
                     <Switch>
                         <Router exact={false} path={url}>
-                            <Home />
+                            <Home/>
                         </Router>
                     </Switch>
                 </div>
@@ -107,19 +112,18 @@ const Logged = (props) => {
                                   onChange={handleChange} value={tagInput}/>
                            <Input id={"spent"} label={"spent"} type={"text"} placeholder={"Enter spent times"}
                                   onChange={handleChange} value={spentInput}/>
-                           <button onClick={handleClick} id={"random"} className={"button is-info"}> random tag </button>
+                           <button onClick={handleClick} id={"random"} className={"button is-info"}> random tag</button>
                        </>
                    }
             >
                 {/*  let {id,label, type, placeholder, onChange, handleBlur} = props*/}
-                <button  className="button is-success" onClick={handleClick} id={"balanceCreate"}>
+                <button className="button is-success" onClick={handleClick} id={"balanceCreate"}>
                     Create
                 </button>
             </Modal>
         </Router>
     )
 }
-
 
 
 function mapDispatchToProps(dispatch) {
@@ -129,4 +133,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(null,mapDispatchToProps)(Logged)
+export default connect(null, mapDispatchToProps)(Logged)
