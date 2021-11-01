@@ -22,7 +22,7 @@ String.prototype.hexToByteArray = function() {
 }
 
 export const hash = (value,salt = null)=>{
-    return oldhash(value).toString(CryptoJs.enc.Hex).toUpperCase()
+    return oldhash(value.toString().replaceAll(","," ")).toString(CryptoJs.enc.Hex).toUpperCase()
 }
 
 

@@ -28,10 +28,10 @@ const New_Wallet = (props, dispatch) => {
             }
             case "submit": {
                 let hashed_char_array_seed = Array.from(hash(mnemonic).toUpperCase())
-                let hashed_char_array_pass = Array.from(hashedPass)
-                let _public = _.xor(hashed_char_array_seed, hashed_char_array_pass)
+                let hashed_char_array_pass = Array.from(hash(pass))
+                let _public = xorArray(hashed_char_array_seed, hashed_char_array_pass)
                 let secret = hash(mnemonic).toUpperCase()
-                props.SET_WALLET(_public,hashedPass,secret)
+                props.SET_WALLET(_public,hash(pass),secret)
                 setIsActive(!isActive)
             }
         }
@@ -50,9 +50,9 @@ const New_Wallet = (props, dispatch) => {
         }
     }
 
-    useEffect(()=>{
-        setHashedPass(hash(pass))
-    },[pass])
+    // useEffect(()=>{
+    //     setHashedPass(hash(pass))
+    // },[pass])
 
     return (
         <div className={"container"}>
