@@ -54,8 +54,9 @@ export default function Store(state = initialState, action) {
             return {...state}
         }
         case UPDATE_BALANCE: {
-            let {balances} = state
-            balances[action.payload.id][action.payload.key] = action.payload.value
+            let current = {...state}
+            current['balances'][action.payload.id][action.payload.key] = action.payload.value
+
             return {...state}
         }
         case DELETE_BALANCE: {

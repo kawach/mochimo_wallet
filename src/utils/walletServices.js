@@ -35,7 +35,7 @@ export const xorArray = (seed_bytes, password_bytes) => {
 }
 
 export const getBalance = async (wots) => {
-    return await fetch(`http://api.mochimo.org:8888/net/balance/${wots}`).then(res => res)
+    return await fetch(`http://api.mochimo.org:8888/net/balance/${wots}`).then(res => res.json()).then(res => res['quorum'][0].balance)
 }
 
 export const getCurrentBlock = async () => {

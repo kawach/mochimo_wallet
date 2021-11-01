@@ -94,17 +94,13 @@ const Balance = (props) => {
         }
     }
 
-    useEffect(() => {
-        getBalance(wots).then(res => res.json()).then(res => props.UPDATE_BALANCE(balance.id, balance,'amount_nmcm',res['quorum'][0].balance))
-    }, [wots])
-
     return (
         <div className="card mb-5">
             <header className="card-header">
                 <p className="card-header-title">
                     TAG : {balance.tag}
                 </p>
-                <button className="card-header-icon" aria-label="more options" onClick={handleClick} id={"refresh"}>
+                <button className="card-header-icon" aria-label="more options" onClick={()=>{getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance,"amount_nmcm",result))}}>
                       <span className="icon">
                         <i className="fas fa-sync" aria-hidden="true"></i>
                       </span>
