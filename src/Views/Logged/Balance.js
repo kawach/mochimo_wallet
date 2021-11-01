@@ -31,12 +31,12 @@ const Balance = (props) => {
     const handleClick = (event) => {
         switch (event.target.id) {
             case "send": {
-                let source_wots = balance[1].wots_address[0]
-                let source_secret = balance[1].wots_address[1]
-                const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances + 1) + 0), balance[1].tag)
+                let source_wots = balance.wots_address[0]
+                let source_secret = balance.wots_address[1]
+                const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances + 1) + 0), balance.tag)
                 let TX_fee = 500
                 let remaining_amount = currentBalance - (amount + TX_fee);
-                let transaction_array = compute_transaction(balance[1].wots_address[0], balance[1].wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
+                let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "http://api.mochimo.org:8888/push";
                 let data = JSON.stringify({"transaction": transaction})
@@ -48,8 +48,8 @@ const Balance = (props) => {
                         if (xhr.status === 200) {
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
-                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance[1].tag ? balance[1].tag : "", "Activated", change_wots, 0)
-                                props.DELETE_BALANCE(balance[1].id, balance[1])
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance.tag ? balance.tag : "", "Activated", change_wots, 0)
+                                props.DELETE_BALANCE(balance.id, balance)
                             })
                         } else if (xhr.status !== 200) {
                             toast.error("Failed to send transaction")
@@ -63,7 +63,7 @@ const Balance = (props) => {
             }
         }
     };
-    // console.log(balance[1].status === "pending" ? (resolveTag(balance[1].tag).then(res =>{ if (res.unanimous === true){}})) : "")
+
     const handleChange = (event) => {
         switch (event.target.id) {
             case 'amount': {
