@@ -13,6 +13,15 @@ export const SET_WALLET = (pub = undefined, password_hash = undefined, secret = 
     }
 }
 
+export const UPDATE_WALLET_NAME = (name) => {
+    return {
+        type: "UPDATE_WALLET_NAME",
+        payload: {
+            name: name,
+        }
+    }
+}
+
 export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, status, wots_address, many_spent) => {
     return {
         type: "SET_BALANCE",
@@ -25,6 +34,16 @@ export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, stat
             tag: tag,
             wots_address: wots_address,
             many_spent: many_spent,
+        }
+    }
+}
+
+export const UPDATE_BALANCE = (id, balance) => {
+    return {
+        type: "UPDATE_BALANCE",
+        payload: {
+            id: id,
+            balance: balance
         }
     }
 }

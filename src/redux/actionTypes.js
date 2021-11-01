@@ -1,3 +1,5 @@
 export const SET_WALLET = "SET_WALLET"
+export const UPDATE_WALLET_NAME = "UPDATE_WALLET_NAME"
 export const SET_BALANCE = "SET_BALANCE"
+export const UPDATE_BALANCE = "SET_BALANCE"
 export const DELETE_BALANCE = "DELETE_BALANCE"

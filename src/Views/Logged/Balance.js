@@ -2,7 +2,7 @@ import {
     _arrayBufferToBase64,
     compute_transaction,
     generateWots,
-    getBalance,
+    getBalance, getCurrentBlock,
     hash,
     resolveTag
 } from "../../utils/walletServices";
@@ -44,7 +44,9 @@ const Balance = (props) => {
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200){
-                            props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,null,balance[1].tag ? balance[1].tag : "","Activated",change_wots,0)
+                            getCurrentBlock().then((block)=>{
+                                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,block,balance[1].tag ? balance[1].tag : "","Activated",change_wots,0)
+                            })
                         }
                     }};
                 xhr.send(data);
@@ -127,12 +129,17 @@ const Balance = (props) => {
                                         </button>
                                         <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                             <div className="dropdown-content">
-                                                <a href="#" className="dropdown-item" onClick={()=>{setIsActive(!isActive)}}>
+                                                <button className="dropdown-item button" onClick={()=>{navigator.clipboard.writeText(wots)}}>
+                                                    Copy Wots
+                                                </button>
+                                                <hr className="dropdown-divider" />
+                                                <div className="dropdown-item" onClick={()=>{setIsActive(!isActive)}}>
                                                     Send
-                                                </a>
-                                                <a href="#" className="dropdown-item" onClick={()=>{props.DELETE_BALANCE(balance[1].id,balance[1])}}>
+                                                </div>
+                                                <hr className="dropdown-divider" />
+                                                <div className="dropdown-item button is-danger is-outlined" onClick={()=>{props.DELETE_BALANCE(balance[1].id,balance[1])}}>
                                                     Delete
-                                                </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
