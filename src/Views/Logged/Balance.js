@@ -2,16 +2,16 @@ import {
     _arrayBufferToBase64,
     compute_transaction,
     generateWots,
-    getBalance, getCurrentBlock,
-    hash,
-    resolveTag
+    getBalance,
+    getCurrentBlock,
+    hash
 } from "../../utils/walletServices";
 import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
 import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
-import {SET_BALANCE, DELETE_BALANCE} from "../../redux/actions";
+import {DELETE_BALANCE, SET_BALANCE} from "../../redux/actions";
 
 const {Wots} = require('mochimo')
 
@@ -37,18 +37,19 @@ const Balance = (props) => {
                 let transaction_array = compute_transaction(balance[1].wots_address[0], balance[1].wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "http://api.mochimo.org:8888/push";
-                let data = JSON.stringify({"transaction":transaction})
+                let data = JSON.stringify({"transaction": transaction})
                 let xhr = new XMLHttpRequest();
                 xhr.open("POST", url);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
-                        if (xhr.status === 200){
-                            getCurrentBlock().then((block)=>{
-                                props.SET_BALANCE(wallet.many_balances ,hash(wallet.secret + wallet.many_balances),0,block,balance[1].tag ? balance[1].tag : "","Activated",change_wots,0)
+                        if (xhr.status === 200) {
+                            getCurrentBlock().then((block) => {
+                                props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, balance[1].tag ? balance[1].tag : "", "Activated", change_wots, 0)
                             })
                         }
-                    }};
+                    }
+                };
                 xhr.send(data);
             }
         }
@@ -74,11 +75,11 @@ const Balance = (props) => {
 
     const handleHover = (event) => {
         switch (event.type) {
-            case "mouseenter":{
+            case "mouseenter": {
                 setHover("is-active")
                 break
             }
-            case "mouseleave":{
+            case "mouseleave": {
                 setHover("")
                 break
             }
@@ -91,7 +92,7 @@ const Balance = (props) => {
     return (
         <div className="card mb-5">
             <header className="card-header">
-                <p className="card-header-title">
+                <p className="card-header-title tag">
                     TAG : {balance[1].tag}
                 </p>
             </header>
@@ -112,16 +113,24 @@ const Balance = (props) => {
                             </div>
                         </div>
                         <div className="level-item has-text-centered">
-                            <div>
-                                <p className="heading">Name</p>
-                                <p className="title">{balance[1].name ? balance[1].name : "un-named balance"}</p>
-                            </div>
+                            {balance[1].name ? (
+                                <div>
+                                    <p className="heading">Name</p>
+                                    <p className="title">{balance[1].name}</p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <p className="heading">Un-named</p>
+                                </div>
+                            )}
                         </div>
                         <div className="level-item has-text-centered">
                             <div>
-                                <div className={`dropdown ` + onHover} onMouseEnter={handleHover} onMouseLeave={handleHover}>
+                                <div className={`dropdown ` + onHover} onMouseEnter={handleHover}
+                                     onMouseLeave={handleHover}>
                                     <div className="dropdown-trigger">
-                                        <button className="button" aria-haspopup="true" data-id={props.index} aria-controls="dropdown-menu">
+                                        <button className="button" aria-haspopup="true" data-id={props.index}
+                                                aria-controls="dropdown-menu">
                                             <span>Action</span>
                                             <span className="icon is-small">
                                             <i className="fas fa-angle-down" aria-hidden="true"></i>
@@ -129,15 +138,22 @@ const Balance = (props) => {
                                         </button>
                                         <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                             <div className="dropdown-content">
-                                                <button className="dropdown-item button" onClick={()=>{navigator.clipboard.writeText(wots)}}>
+                                                <button className="dropdown-item button" onClick={() => {
+                                                    navigator.clipboard.writeText(wots)
+                                                }}>
                                                     Copy Wots
                                                 </button>
-                                                <hr className="dropdown-divider" />
-                                                <div className="dropdown-item" onClick={()=>{setIsActive(!isActive)}}>
+                                                <hr className="dropdown-divider"/>
+                                                <div className="dropdown-item" onClick={() => {
+                                                    setIsActive(!isActive)
+                                                }}>
                                                     Send
                                                 </div>
-                                                <hr className="dropdown-divider" />
-                                                <div className="dropdown-item button is-danger is-outlined" onClick={()=>{props.DELETE_BALANCE(balance[1].id,balance[1])}}>
+                                                <hr className="dropdown-divider"/>
+                                                <div className="dropdown-item button is-danger is-outlined"
+                                                     onClick={() => {
+                                                         props.DELETE_BALANCE(balance[1].id, balance[1])
+                                                     }}>
                                                     Delete
                                                 </div>
                                             </div>
@@ -153,9 +169,10 @@ const Balance = (props) => {
                    title={"Send MCM"}
                    content={
                        <>
+                           <p className={"label"}> Source </p>
                            <div className="select is-link">
                                <select>
-                                   <option>{hash(wots)}</option>
+                                   <option>{balance[1].tag ? balance[1].tag : hash(wots)}</option>
                                </select>
                            </div>
                            <Input id={"receiver"} label={"Receiver"} type={"text"} placeholder={"********"}
@@ -176,7 +193,7 @@ const Balance = (props) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({SET_BALANCE,DELETE_BALANCE}, dispatch),
+        ...bindActionCreators({SET_BALANCE, DELETE_BALANCE}, dispatch),
     }
 }
 

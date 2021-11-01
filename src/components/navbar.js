@@ -12,9 +12,8 @@ export const Navbar = (props) => {
     return (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                <Link to={"/"}>
-                    <img src={logo} height={"150px"}/>
-                </Link>
+                {props.isAuthenticated ? <Link to={"/logged"}><img src={logo} style={{height: "60px"}}/></Link> : <Link to={"/"}><img src={logo} style={{height: "60px"}}/></Link>}
+
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false"
                    data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
@@ -29,9 +28,10 @@ export const Navbar = (props) => {
                         <div className="buttons">
                             <Link to={"/"} className="button is-primary">
                                 Current wallet
-                                : {props.isAuthenticated ? (props.isAuthenticated.wallet_name ? props.isAuthenticated.wallet_name : "Un-named" ) : "Not Connected" }
+                                : {props.isAuthenticated ? (props.isAuthenticated.wallet_name ? props.isAuthenticated.wallet_name : "Un-named") : "Not Connected"}
                             </Link>
-                            {props.isAuthenticated ? <Link to={"logged/settings"} className="button"> Settings </Link> : null}
+                            {props.isAuthenticated ?
+                                <Link to={"logged/settings"} className="button"> Settings </Link> : null}
                         </div>
                     </div>
                 </div>
