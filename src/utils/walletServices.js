@@ -43,6 +43,14 @@ export const getCurrentBlock = async () => {
     return block
 }
 
+export const checkBalanceActivation = (times, balance)=>{
+    console.log(balance.blockStatus)
+    setInterval((index)=>{
+        console.log(index)
+    },Math.floor(times*1000*60))
+    // getCurrentBlock().then(block => console.log(block))
+}
+
 export const generateString = (length) => {
 
     let result = ['0', '2'];

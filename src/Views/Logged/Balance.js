@@ -1,5 +1,5 @@
 import {
-    _arrayBufferToBase64,
+    _arrayBufferToBase64, checkBalanceActivation,
     compute_transaction,
     generateWots,
     getBalance,
@@ -27,7 +27,10 @@ const Balance = (props) => {
     const [currentBalance, setCurrentBalance] = useState();
     const wallet = useSelector(({wallet}) => wallet)
     const wots = Buffer.from(balance.wots_address[0]).toString("hex")
-
+    useEffect(()=>{
+        return balance.tag ? 
+            (balance.status !== 0 ? (checkBalanceActivation(1,balance)) : console.log(balance.status)) : null
+    },[balance.status, balance.tag])
     const handleClick = (event) => {
         switch (event.target.id) {
             case "send": {

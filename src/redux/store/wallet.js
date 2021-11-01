@@ -1,5 +1,6 @@
 import {DELETE_BALANCE, SET_BALANCE, SET_WALLET, UPDATE_BALANCE, UPDATE_WALLET_NAME, UPDATE_WALLET} from "../actionTypes";
 import {getBalance} from "../../utils/walletServices";
+import {toast} from "react-toastify";
 
 const initialState = {
     password_hash: undefined,
@@ -54,6 +55,7 @@ export default function Store(state = initialState, action) {
             return {...state}
         }
         case UPDATE_BALANCE: {
+            toast.success(`Balance : ${action.payload.id}, Key : ${action.payload.key} updated`)
             let current = {...state}
             current['balances'][action.payload.id][action.payload.key] = action.payload.value
 
