@@ -21,6 +21,11 @@ export const UPDATE_WALLET_NAME = (name) => {
         }
     }
 }
+export const REFRESH_WALLET = () => {
+    return {
+        type: "UPDATE_WALLET_NAME",
+    }
+}
 
 export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, status, wots_address, many_spent) => {
     return {
@@ -38,12 +43,14 @@ export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, stat
     }
 }
 
-export const UPDATE_BALANCE = (id, balance) => {
+export const UPDATE_BALANCE = (id, balance,key,value) => {
     return {
         type: "UPDATE_BALANCE",
         payload: {
             id: id,
-            balance: balance
+            balance: balance,
+            key:key,
+            value: value,
         }
     }
 }

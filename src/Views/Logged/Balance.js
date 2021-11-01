@@ -11,21 +11,22 @@ import {Input} from "../../components/input";
 import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
-import {DELETE_BALANCE, SET_BALANCE} from "../../redux/actions";
+import {DELETE_BALANCE, SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
 import {toast} from "react-toastify";
 
 const {Wots} = require('mochimo')
 
 const Balance = (props) => {
-    const {balance} = props
+    let {balance} = props
+    balance = balance[1]
     const [isActive, setIsActive] = useState();
     const [onHover, setHover] = useState("");
     const [amount, setAmount] = useState();
     const [receiver, setReceiver] = useState();
-    const [isLoading, setIsLoading] = useState(true);
+    const [balanceAmount, setBalanceAmount] = useState();
     const [currentBalance, setCurrentBalance] = useState();
     const wallet = useSelector(({wallet}) => wallet)
-    const wots = Buffer.from(balance[1].wots_address[0]).toString("hex")
+    const wots = Buffer.from(balance.wots_address[0]).toString("hex")
 
     const handleClick = (event) => {
         switch (event.target.id) {
@@ -57,8 +58,10 @@ const Balance = (props) => {
                 };
                 xhr.send(data);
             }
+            case "refresh":{
+                break
+            }
         }
-
     };
     // console.log(balance[1].status === "pending" ? (resolveTag(balance[1].tag).then(res =>{ if (res.unanimous === true){}})) : "")
     const handleChange = (event) => {
@@ -92,15 +95,16 @@ const Balance = (props) => {
     }
 
     useEffect(() => {
-        getBalance(wots).then(res => res.json()).then(res => setCurrentBalance(res['quorum'][0].balance))
+        getBalance(wots).then(res => res.json()).then(res => props.UPDATE_BALANCE(balance.id, balance,'amount_nmcm',res['quorum'][0].balance))
     }, [wots])
+
     return (
         <div className="card mb-5">
             <header className="card-header">
-                <p className="card-header-title" onClick={handleClick} id={"test"}>
-                    TAG : {balance[1].tag}
+                <p className="card-header-title">
+                    TAG : {balance.tag}
                 </p>
-                <button className="card-header-icon" aria-label="more options">
+                <button className="card-header-icon" aria-label="more options" onClick={handleClick} id={"refresh"}>
                       <span className="icon">
                         <i className="fas fa-sync" aria-hidden="true"></i>
                       </span>
@@ -118,15 +122,15 @@ const Balance = (props) => {
                         <div className="level-item has-text-centered">
                             <div>
                                 <p className="heading">Total nMCM</p>
-                                <div className="title">{currentBalance ? currentBalance : (
+                                <div className="title">{balance.amount_nmcm ? balance.amount_nmcm : (
                                     <p className={"is-loading"}></p>)}</div>
                             </div>
                         </div>
                         <div className="level-item has-text-centered">
-                            {balance[1].name ? (
+                            {balance.name ? (
                                 <div>
                                     <p className="heading">Name</p>
-                                    <p className="title">{balance[1].name}</p>
+                                    <p className="title">{balance.name}</p>
                                 </div>
                             ) : (
                                 <div>
@@ -162,7 +166,7 @@ const Balance = (props) => {
                                                 <hr className="dropdown-divider"/>
                                                 <div className="dropdown-item button is-danger is-outlined"
                                                      onClick={() => {
-                                                         props.DELETE_BALANCE(balance[1].id, balance[1])
+                                                         props.DELETE_BALANCE(balance.id, balance)
                                                      }}>
                                                     Delete
                                                 </div>
@@ -182,7 +186,7 @@ const Balance = (props) => {
                            <p className={"label"}> Source </p>
                            <div className="select is-link">
                                <select>
-                                   <option>{balance[1].tag ? balance[1].tag : hash(wots)}</option>
+                                   <option>{balance.tag ? balance.tag : hash(wots)}</option>
                                </select>
                            </div>
                            <Input id={"receiver"} label={"Receiver"} type={"text"} placeholder={"********"}
@@ -203,7 +207,7 @@ const Balance = (props) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({SET_BALANCE, DELETE_BALANCE}, dispatch),
+        ...bindActionCreators({SET_BALANCE, DELETE_BALANCE,UPDATE_BALANCE}, dispatch),
     }
 }
 

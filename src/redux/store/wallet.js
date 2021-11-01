@@ -1,4 +1,5 @@
-import {DELETE_BALANCE, SET_BALANCE, SET_WALLET, UPDATE_BALANCE, UPDATE_WALLET_NAME} from "../actionTypes";
+import {DELETE_BALANCE, SET_BALANCE, SET_WALLET, UPDATE_BALANCE, UPDATE_WALLET_NAME, UPDATE_WALLET} from "../actionTypes";
+import {getBalance} from "../../utils/walletServices";
 
 const initialState = {
     password_hash: undefined,
@@ -49,10 +50,12 @@ export default function Store(state = initialState, action) {
                 }
             }
         }
+        case UPDATE_WALLET:{
+            return {...state}
+        }
         case UPDATE_BALANCE: {
-            let current = {...state}
-            // current['balances'][action.payload.id]
-            console.log(action)
+            let {balances} = state
+            balances[action.payload.id][action.payload.key] = action.payload.value
             return {...state}
         }
         case DELETE_BALANCE: {
