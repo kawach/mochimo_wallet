@@ -2,7 +2,7 @@ import {connect, useSelector} from "react-redux";
 import {BrowserRouter as Router, Switch, useRouteMatch} from "react-router-dom";
 import Home from "./Home";
 import {Modal} from "../../components/Modal";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Input} from "../../components/input";
 import {foutainWots, generateString, generateWots, getCurrentBlock, hash} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
@@ -83,7 +83,6 @@ const Logged = (props) => {
             }
         }
     }
-
     return (
         <Router>
             <section className="hero">
