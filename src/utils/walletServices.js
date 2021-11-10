@@ -2,6 +2,7 @@
 import CryptoJs from "crypto-js";
 import {byte_copy, sha256, from_int_to_byte_array, wots_sign} from "./wots.mjs";
 import {wots_public_key_gen} from "./wots.mjs";
+import {useCallback, useEffect, useState} from "react";
 var oldhash = require("crypto-js/sha256");
 
 
@@ -35,20 +36,12 @@ export const xorArray = (seed_bytes, password_bytes) => {
 }
 
 export const getBalance = async (wots) => {
-    return await fetch(`http://api.mochimo.org:8888/net/balance/${wots}`).then(res => res.json()).then(res => res['quorum'][0].balance)
+    return await fetch(`http://api.mochimo.org:8888/net/balance/${wots}`).then(res => res.json()).then(res => (res.success ? res['quorum'][0].balance : getBalance(wots)))
 }
 
 export const getCurrentBlock = async () => {
     let block = fetch("http://api.mochimo.org:8888/net/chain").then(res=>res.json()).then(({block})=>block.height)
     return block
-}
-
-export const checkBalanceActivation = (times, balance)=>{
-    console.log(balance.blockStatus)
-    setInterval((index)=>{
-        console.log(index)
-    },Math.floor(times*1000*60))
-    // getCurrentBlock().then(block => console.log(block))
 }
 
 export const generateString = (length) => {

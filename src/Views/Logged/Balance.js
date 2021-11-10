@@ -4,11 +4,11 @@ import {
     generateWots,
     getBalance,
     getCurrentBlock,
-    hash
+    hash, resolveTag, useBalanceActivation
 } from "../../utils/walletServices";
 import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import {DELETE_BALANCE, SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
@@ -27,10 +27,23 @@ const Balance = (props) => {
     const [currentBalance, setCurrentBalance] = useState();
     const wallet = useSelector(({wallet}) => wallet)
     const wots = Buffer.from(balance.wots_address[0]).toString("hex")
+    const [runEffect, setRunEffect] = useState(true)
+
+    const handleRun = () => {
+        setRunEffect(!runEffect)
+    }
+
     useEffect(()=>{
-        return balance.tag ? 
-            (balance.status !== 0 ? (checkBalanceActivation(1,balance)) : console.log(balance.status)) : null
-    },[balance.status, balance.tag])
+        if (balance.tag) {
+            if (parseInt(balance.status) !== 1) {
+                resolveTag(balance.tag).then((res) => {
+                    console.log(balance.blockStatus)
+                    return res.success ? (res.addressConsensus === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
+                })
+            }
+        }
+    },[runEffect])
+
     const handleClick = (event) => {
         switch (event.target.id) {
             case "send": {
@@ -51,7 +64,7 @@ const Balance = (props) => {
                         if (xhr.status === 200) {
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
-                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance.tag ? balance.tag : "", "Activated", change_wots, 0)
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance.tag ? balance.tag : "", "2", change_wots, 0)
                                 props.DELETE_BALANCE(balance.id, balance)
                             })
                         } else if (xhr.status !== 200) {
