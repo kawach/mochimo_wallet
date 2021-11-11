@@ -36,9 +36,28 @@ const Balance = (props) => {
     useEffect(()=>{
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
-                resolveTag(balance.tag).then((res) => {
-                    console.log(balance.blockStatus)
-                    return res.success ? (res.addressConsensus === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
+                resolveTag(balance.tag).then((tag) => {
+                    console.log(tag)
+                    if (tag.address === wots){
+                        props.UPDATE_BALANCE(balance.id, balance, "status", "1")
+                    } else if (tag.error === "Not Found"){
+                        getCurrentBlock().then(res =>
+                            (res < parseInt(balance.blockStatus) + 3 ?(
+
+                                toast.info(tag.message + " waiting another block"),setTimeout(()=>{handleRun()},40000)) :
+                                    console.log("more than 3 block")
+                            )
+                        )
+                    }
+                    // return res.address === wots ?
+                    //     props.UPDATE_BALANCE(balance.id, balance, "status", "1") :
+                    //     (getCurrentBlock().then(res =>
+                    //         (res < parseInt(balance.blockStatus) + 3 ?(
+                    //             setTimeout(()=>{setRunEffect(!runEffect)},40000), handleRun(!runEffect)) :
+                    //             console.log("more than 3 block")
+                    //         )
+                    //     ))
+                    // return res.success ? (res.address === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
                 })
             }
         }
@@ -135,7 +154,7 @@ const Balance = (props) => {
                             <div>
                                 <p className="heading">Total nMCM</p>
                                 <div className="title">{balance.amount_nmcm ? balance.amount_nmcm : (
-                                    <p className={"is-loading"}></p>)}</div>
+                                    <a className="button is-loading">Loading</a>)}</div>
                             </div>
                         </div>
                         <div className="level-item has-text-centered">
