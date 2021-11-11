@@ -4,10 +4,12 @@ import logo from '../mochimo-pq-logo.svg'
 export const Navbar = (props) => {
 
     const handleClick = (event) => {
-        let test = document.querySelector('[data-target]')
-        let target = test.dataset.target
-        let menu = document.getElementById(target)
-        menu.classList.toggle('is-active')
+        let test = document.querySelectorAll('[data-target]')
+        // test.classList.toggle("is-active")
+        test.forEach((item)=>{item.classList.toggle("is-active")})
+        // let target = test.dataset.target
+        // let menu = document.getElementById(target)
+        // menu.classList.toggle('is-active')
     }
     return (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
@@ -21,7 +23,7 @@ export const Navbar = (props) => {
                     <span aria-hidden="true"></span>
                 </a>
             </div>
-            <div className="navbar-menu">
+            <div className="navbar-menu" data-target="navbarBasicExample">
                 <NavbarStart/>
                 <div className="navbar-end">
                     <div className="navbar-item">
