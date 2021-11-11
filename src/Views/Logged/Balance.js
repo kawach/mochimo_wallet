@@ -40,10 +40,11 @@ const Balance = (props) => {
                     console.log(tag)
                     if (tag.address === wots){
                         props.UPDATE_BALANCE(balance.id, balance, "status", "1")
+                        getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance,"amount_nmcm",result))
+                        toast.success(balance.tag + " is now activated")
                     } else if (tag.error === "Not Found"){
                         getCurrentBlock().then(res =>
                             (res < parseInt(balance.blockStatus) + 3 ?(
-
                                 toast.info(tag.message + " waiting another block"),setTimeout(()=>{handleRun()},40000)) :
                                     console.log("more than 3 block")
                             )
@@ -152,8 +153,8 @@ const Balance = (props) => {
                         </div>
                         <div className="level-item has-text-centered">
                             <div>
-                                <p className="heading">Total nMCM</p>
-                                <div className="title">{balance.amount_nmcm ? balance.amount_nmcm : (
+                                <p className="heading">Total MCM</p>
+                                <div className="title">{balance.amount_nmcm ? (parseInt(balance.amount_nmcm) / 1000000000) : (
                                     <a className="button is-loading">Loading</a>)}</div>
                             </div>
                         </div>
