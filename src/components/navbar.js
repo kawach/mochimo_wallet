@@ -14,7 +14,7 @@ export const Navbar = (props) => {
             <div className="navbar-brand">
                 {props.isAuthenticated ? <Link to={"/logged"}><img src={logo} style={{height: "60px"}}/></Link> : <Link to={"/"}><img src={logo} style={{height: "60px"}}/></Link>}
 
-                <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false"
+                <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" onClick={handleClick}
                    data-target="navbarBasicExample">
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
