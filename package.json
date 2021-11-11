@@ -1,6 +1,6 @@
 {
   "name": "mochimo_wallet",
-  "homepage": "https://kawach.github.io/",
+  "homepage": "https://kawach.github.io/mochimo_wallet/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
