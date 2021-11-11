@@ -154,7 +154,7 @@ const Balance = (props) => {
                         <div className="level-item has-text-centered">
                             <div>
                                 <p className="heading">Total MCM</p>
-                                <div className="title">{balance.amount_nmcm ? (parseInt(balance.amount_nmcm) / 1000000000) : (
+                                <div className="title">{balance.amount_nmcm ?Number( (parseInt(balance.amount_nmcm) / 1000000000) ).toFixed(9) : (
                                     <a className="button is-loading">Loading</a>)}</div>
                             </div>
                         </div>
