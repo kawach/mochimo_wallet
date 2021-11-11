@@ -37,8 +37,27 @@ const Balance = (props) => {
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((res) => {
-                    console.log(balance.blockStatus)
-                    return res.success ? (res.addressConsensus === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
+                    console.log(res)
+                    if (res.address === wots){
+                        props.UPDATE_BALANCE(balance.id, balance, "status", "1")
+                    } else if (res.error === "Not Found"){
+                        getCurrentBlock().then(res =>
+                            (res < parseInt(balance.blockStatus) + 3 ?(
+
+                                console.log(res,balance.blockStatus),setTimeout(()=>{handleRun()},40000)) :
+                                    console.log("more than 3 block")
+                            )
+                        )
+                    }
+                    // return res.address === wots ?
+                    //     props.UPDATE_BALANCE(balance.id, balance, "status", "1") :
+                    //     (getCurrentBlock().then(res =>
+                    //         (res < parseInt(balance.blockStatus) + 3 ?(
+                    //             setTimeout(()=>{setRunEffect(!runEffect)},40000), handleRun(!runEffect)) :
+                    //             console.log("more than 3 block")
+                    //         )
+                    //     ))
+                    // return res.success ? (res.address === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
                 })
             }
         }

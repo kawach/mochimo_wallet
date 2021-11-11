@@ -11,7 +11,7 @@ export const foutainWots = (wots) => {
 }
 
 export const resolveTag = (tag) => {
-    return fetch(`http://api.mochimo.org:8888/net/resolve/${tag}`).then(res => res.json())
+    return fetch(`https://api.mochimap.com/ledger/tag/${tag}`).then(res => res.json())
 }
 // eslint-disable-next-line no-extend-native
 String.prototype.hexToByteArray = function() {
@@ -40,7 +40,8 @@ export const getBalance = async (wots) => {
 }
 
 export const getCurrentBlock = async () => {
-    let block = fetch("http://api.mochimo.org:8888/net/chain").then(res=>res.json()).then(({block})=>block.height)
+    // let block = fetch("http://api.mochimo.org:8888/net/chain").then(res=>res.json()).then(({block})=>block.height)
+    let block = fetch("https://api.mochimap.com/chain/").then(res=>res.json()).then((block)=>block.bnum)
     return block
 }
 
