@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/static/css/main.5739ad41.chunk.css",
-    "main.js": "/static/js/main.6ad69d6b.chunk.js",
-    "main.js.map": "/static/js/main.6ad69d6b.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.2660a846.js",
-    "runtime-main.js.map": "/static/js/runtime-main.2660a846.js.map",
-    "static/css/2.a5db4a47.chunk.css": "/static/css/2.a5db4a47.chunk.css",
-    "static/js/2.b33faf80.chunk.js": "/static/js/2.b33faf80.chunk.js",
-    "static/js/2.b33faf80.chunk.js.map": "/static/js/2.b33faf80.chunk.js.map",
-    "static/js/3.2aefee28.chunk.js": "/static/js/3.2aefee28.chunk.js",
-    "static/js/3.2aefee28.chunk.js.map": "/static/js/3.2aefee28.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/2.a5db4a47.chunk.css.map": "/static/css/2.a5db4a47.chunk.css.map",
-    "static/css/main.5739ad41.chunk.css.map": "/static/css/main.5739ad41.chunk.css.map",
-    "static/js/2.b33faf80.chunk.js.LICENSE.txt": "/static/js/2.b33faf80.chunk.js.LICENSE.txt",
-    "static/media/mochimo-pq-logo.0304aae2.svg": "/static/media/mochimo-pq-logo.0304aae2.svg"
+    "main.css": "/mochimo_wallet/static/css/main.5739ad41.chunk.css",
+    "main.js": "/mochimo_wallet/static/js/main.6ad69d6b.chunk.js",
+    "main.js.map": "/mochimo_wallet/static/js/main.6ad69d6b.chunk.js.map",
+    "runtime-main.js": "/mochimo_wallet/static/js/runtime-main.ab8db1f6.js",
+    "runtime-main.js.map": "/mochimo_wallet/static/js/runtime-main.ab8db1f6.js.map",
+    "static/css/2.a5db4a47.chunk.css": "/mochimo_wallet/static/css/2.a5db4a47.chunk.css",
+    "static/js/2.1ef484a0.chunk.js": "/mochimo_wallet/static/js/2.1ef484a0.chunk.js",
+    "static/js/2.1ef484a0.chunk.js.map": "/mochimo_wallet/static/js/2.1ef484a0.chunk.js.map",
+    "static/js/3.2aefee28.chunk.js": "/mochimo_wallet/static/js/3.2aefee28.chunk.js",
+    "static/js/3.2aefee28.chunk.js.map": "/mochimo_wallet/static/js/3.2aefee28.chunk.js.map",
+    "index.html": "/mochimo_wallet/index.html",
+    "static/css/2.a5db4a47.chunk.css.map": "/mochimo_wallet/static/css/2.a5db4a47.chunk.css.map",
+    "static/css/main.5739ad41.chunk.css.map": "/mochimo_wallet/static/css/main.5739ad41.chunk.css.map",
+    "static/js/2.1ef484a0.chunk.js.LICENSE.txt": "/mochimo_wallet/static/js/2.1ef484a0.chunk.js.LICENSE.txt",
+    "static/media/mochimo-pq-logo.0304aae2.svg": "/mochimo_wallet/static/media/mochimo-pq-logo.0304aae2.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.2660a846.js",
+    "static/js/runtime-main.ab8db1f6.js",
     "static/css/2.a5db4a47.chunk.css",
-    "static/js/2.b33faf80.chunk.js",
+    "static/js/2.1ef484a0.chunk.js",
     "static/css/main.5739ad41.chunk.css",
     "static/js/main.6ad69d6b.chunk.js"
   ]
