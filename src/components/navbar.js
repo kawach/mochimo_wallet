@@ -14,7 +14,7 @@ export const Navbar = (props) => {
     return (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                {props.isAuthenticated ? <Link to={"/logged"}><img src={logo} style={{height: "60px"}}/></Link> : <Link to={"/"}><img src={logo} style={{height: "60px"}}/></Link>}
+                {props.isAuthenticated ? <Link to={"/logged"}><img src={logo} style={{height: "60px"}}/></Link> : <Link to={"/mochimo_wallet/"}><img src={logo} style={{height: "60px"}}/></Link>}
 
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" onClick={handleClick}
                    data-target="navbarBasicExample">
@@ -110,7 +110,7 @@ export const Navbar = (props) => {
 const NavbarStart = () => {
     return (
         <div className="navbar-start">
-            <Link to={"/"} className="navbar-item">
+            <Link to={"/mochimo_wallet/"} className="navbar-item">
                 Home
             </Link>
 
