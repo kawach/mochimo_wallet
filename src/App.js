@@ -48,7 +48,13 @@ function App(props) {
                 <div className="content has-text-centered">
                     <div className="columns">
                         <div className="column">
-
+                            <ul className="menu-list">
+                                <p className="menu-label">
+                                    Official Links
+                                </p>
+                                <li><a href={"https://mochimo.org/"} target="_blank">Mochimo.org</a></li>
+                                <li><a href={"https://discord.gg/sjyNHWJ2Kc"} target="_blank">Mochimo discord</a></li>
+                            </ul>
                         </div>
                         <div className="column is-half">
                             <p>
@@ -63,8 +69,6 @@ function App(props) {
                                         Other links
                                     </p>
                                     <li><a href={"https://www.mochimap.com/explorer"} target="_blank">Mochimap - Explorer</a></li>
-                                    <li><a href={"https://mochimo.org/"} target="_blank">Mochimo.org</a></li>
-                                    <li><a href={"https://discord.gg/sjyNHWJ2Kc"} target="_blank">Mochimo discord</a></li>
                                 </ul>
                             </nav>
                         </div>
