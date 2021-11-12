@@ -117,4 +117,10 @@
   position: absolute !important;
 }
 
+.menu-list{
+  list-style: none;
+}
 
+.hero{
+  min-height: 60vh;
+}
