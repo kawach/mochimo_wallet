@@ -123,13 +123,13 @@ const NavbarStart = () => {
                     More
                 </a>
                 <div className="navbar-dropdown">
-                    <a className="navbar-item">
+                    <Link to={"/about"} className="navbar-item">
                         About
-                    </a>
+                    </Link>
                     <hr className="navbar-divider"/>
-                    <a className="navbar-item">
+                    <Link to={"/report"} className="navbar-item">
                         Report an issue
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
