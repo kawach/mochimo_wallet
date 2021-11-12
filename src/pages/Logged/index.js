@@ -110,8 +110,6 @@ const Logged = (props) => {
                        <>
                            <Input id={"tag"} label={"Tag"} type={"text"} placeholder={"Enter a tag"}
                                   onChange={handleChange} value={tagInput}/>
-                           <Input id={"spent"} label={"spent"} type={"text"} placeholder={"Enter spent times"}
-                                  onChange={handleChange} value={spentInput}/>
                            <button onClick={handleClick} id={"random"} className={"button is-info"}> random tag</button>
                        </>
                    }
