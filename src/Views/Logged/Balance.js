@@ -72,10 +72,11 @@ const Balance = (props) => {
             case "send": {
                 let source_wots = balance.wots_address[0]
                 let source_secret = balance.wots_address[1]
-                const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances + 1) + 0), balance.tag)
+                const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + 1), balance.tag)
                 let TX_fee = 500
-                let remaining_amount = currentBalance - (amount + TX_fee);
-                let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
+                let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
+                console.log(balance.wots_address[0], balance.wots_address, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee)
+                let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "http://api.mochimo.org:8888/push";
                 let data = JSON.stringify({"transaction": transaction})
@@ -90,9 +91,11 @@ const Balance = (props) => {
                         return res.sent === 0 ? toast.error(`${res.error}`) : (
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
+                                toast.info("TX ID : " + res.txid)
                                 props.DELETE_BALANCE(balance.id, balance)
-                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance.tag ? balance.tag : "", "2", change_wots, 0)
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, block, balance.tag ? balance.tag : "", "2", change_wots, 0)
                                 props.DELETE_BALANCE(balance.id, balance)
+                                setRunEffect(!runEffect)
                             })
                         )
                     })
@@ -120,7 +123,6 @@ const Balance = (props) => {
             }
         }
     };
-    console.log(amount)
     const handleHover = (event) => {
         switch (event.type) {
             case "mouseenter": {
@@ -141,7 +143,7 @@ const Balance = (props) => {
                     TAG : {balance.tag}
                 </p>
                 <button className="card-header-icon" aria-label="more options" onClick={() => {
-                    getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
+                    getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", parseInt(parseFloat(result).toFixed(9))))
                 }}>
                       <span className="icon">
                         <i className="fas fa-sync" aria-hidden="true"></i>
