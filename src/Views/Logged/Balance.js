@@ -1,14 +1,15 @@
 import {
-    _arrayBufferToBase64, checkBalanceActivation,
+    _arrayBufferToBase64,
     compute_transaction,
     generateWots,
     getBalance,
     getCurrentBlock,
-    hash, resolveTag, useBalanceActivation
+    hash,
+    resolveTag
 } from "../../utils/walletServices";
 import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import {DELETE_BALANCE, SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
@@ -33,19 +34,21 @@ const Balance = (props) => {
         setRunEffect(!runEffect)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((tag) => {
                     console.log(tag)
-                    if (tag.address === wots){
+                    if (tag.address === wots) {
                         props.UPDATE_BALANCE(balance.id, balance, "status", "1")
-                        getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance,"amount_nmcm",result))
+                        getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
                         toast.success(balance.tag + " is now activated")
-                    } else if (tag.error === "Not Found"){
+                    } else if (tag.error === "Not Found") {
                         getCurrentBlock().then(res =>
-                            (res < parseInt(balance.blockStatus) + 3 ?(
-                                toast.info(tag.message + " waiting another block"),setTimeout(()=>{handleRun()},40000)) :
+                            (res < parseInt(balance.blockStatus) + 3 ? (
+                                        toast.info(tag.message + " waiting another block"), setTimeout(() => {
+                                            handleRun()
+                                        }, 40000)) :
                                     console.log("more than 3 block")
                             )
                         )
@@ -62,7 +65,7 @@ const Balance = (props) => {
                 })
             }
         }
-    },[runEffect])
+    }, [runEffect])
 
     const handleClick = (event) => {
         switch (event.target.id) {
@@ -76,25 +79,26 @@ const Balance = (props) => {
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "http://api.mochimo.org:8888/push";
                 let data = JSON.stringify({"transaction": transaction})
-                let xhr = new XMLHttpRequest();
-                xhr.open("POST", url);
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4) {
-                        if (xhr.status === 200) {
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: data
+                }).then((transaction) => {
+                    transaction.json().then(res => {
+                        return res.sent === 0 ? toast.error(`${res.error}`) : (
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
+                                props.DELETE_BALANCE(balance.id, balance)
                                 props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances + 1) + 0), 0, block, balance.tag ? balance.tag : "", "2", change_wots, 0)
                                 props.DELETE_BALANCE(balance.id, balance)
                             })
-                        } else if (xhr.status !== 200) {
-                            toast.error("Failed to send transaction")
-                        }
-                    }
-                };
-                xhr.send(data);
+                        )
+                    })
+                })
             }
-            case "refresh":{
+            case "refresh": {
                 break
             }
         }
@@ -103,7 +107,7 @@ const Balance = (props) => {
     const handleChange = (event) => {
         switch (event.target.id) {
             case 'amount': {
-                setAmount(parseInt(event.target.value))
+                setAmount(parseInt(parseFloat(event.target.value).toFixed(9).toString().replaceAll(".", "")))
                 break
             }
             case 'receiver': {
@@ -116,7 +120,7 @@ const Balance = (props) => {
             }
         }
     };
-
+    console.log(amount)
     const handleHover = (event) => {
         switch (event.type) {
             case "mouseenter": {
@@ -136,7 +140,9 @@ const Balance = (props) => {
                 <p className="card-header-title">
                     TAG : {balance.tag}
                 </p>
-                <button className="card-header-icon" aria-label="more options" onClick={()=>{getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance,"amount_nmcm",result))}}>
+                <button className="card-header-icon" aria-label="more options" onClick={() => {
+                    getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
+                }}>
                       <span className="icon">
                         <i className="fas fa-sync" aria-hidden="true"></i>
                       </span>
@@ -154,7 +160,8 @@ const Balance = (props) => {
                         <div className="level-item has-text-centered">
                             <div>
                                 <p className="heading">Total MCM</p>
-                                <div className="title">{balance.amount_nmcm ?Number( (parseInt(balance.amount_nmcm) / 1000000000) ).toFixed(9) : (
+                                <div
+                                    className="title">{balance.amount_nmcm ? Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) : (
                                     <a className="button is-loading">Loading</a>)}</div>
                             </div>
                         </div>
@@ -239,7 +246,7 @@ const Balance = (props) => {
 function mapDispatchToProps(dispatch) {
     return {
         dispatch,
-        ...bindActionCreators({SET_BALANCE, DELETE_BALANCE,UPDATE_BALANCE}, dispatch),
+        ...bindActionCreators({SET_BALANCE, DELETE_BALANCE, UPDATE_BALANCE}, dispatch),
     }
 }
 
