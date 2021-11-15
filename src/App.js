@@ -28,7 +28,7 @@ function App(props) {
         <Router>
             <Navbar isAuthenticated={isAuthenticated}/>
             <Switch>
-                <Route exact={true} path={"/mochimo_wallet/"}>
+                <Route exact={true} path={"/"}>
                     <div className={"container"}>
                         <Login/>
                     </div>
