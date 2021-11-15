@@ -11,7 +11,9 @@ import {About} from "./pages/about/About";
 import {Report} from "./pages/report/Report";
 
 function App(props) {
-    toast.configure()
+    toast.configure({
+        draggable: false
+    })
     const isAuthenticated = props.wallet ? props.wallet : undefined
     // console.log(isAuthenticated)
     useEffect(() => {
@@ -37,9 +39,9 @@ function App(props) {
                 <Route path={"/logged"}>
                     <Logged/>
                 </Route>
-                <Router exact={true} path={"/about"}>
+                <Route exact={true} path={"/about"}>
                     <About/>
-                </Router>
+                </Route>
                 <Router exact={true} path={"/report"}>
                     <Report/>
                 </Router>
@@ -68,7 +70,8 @@ function App(props) {
                                     <p className="menu-label">
                                         Other links
                                     </p>
-                                    <li><a href={"https://www.mochimap.com/explorer"} target="_blank">Mochimap - Explorer</a></li>
+                                    <li><a href={"https://www.mochimap.com/explorer"} target="_blank">Mochimap -
+                                        Explorer</a></li>
                                 </ul>
                             </nav>
                         </div>

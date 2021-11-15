@@ -1,5 +1,6 @@
 import {connect, useSelector} from "react-redux";
-import {BrowserRouter as Router, Switch, useRouteMatch} from "react-router-dom";
+import {BrowserRouter as Router, Link, Route, Switch, useRouteMatch} from "react-router-dom";
+
 import Home from "./Home";
 import {Modal} from "../../components/Modal";
 import {useEffect, useState} from "react";
@@ -9,13 +10,14 @@ import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
 import {toast} from "react-toastify";
+import Settings from "../Settings/Settings";
 
 const {Wots} = require('mochimo');
 
 const Logged = (props) => {
 
     const [tagInput, setTagInput] = useState(undefined)
-    const [spentInput, setSpentInput] = useState(undefined)
+    const [spentInput, setSpentInput] = useState(0)
     const [inputWallet_Secret, setInputWallet_Secret] = useState()
     const [isActive, setIsActive] = useState()
     const wallet = useSelector(({wallet}) => wallet)
@@ -46,7 +48,7 @@ const Logged = (props) => {
                 }) : (
                     getCurrentBlock().then((block) => {
                         return (
-                            props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, tagInput, "untagged", wots, 0),
+                            props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 0), 0, block, tagInput, "untagged", wots, 0),
                                 setIsActive(!isActive)
                         )
                     })
@@ -58,7 +60,6 @@ const Logged = (props) => {
             }
         }
     }
-
     const handleChange = (event) => {
         switch (event.target.id) {
             case "tag": {
@@ -96,11 +97,15 @@ const Logged = (props) => {
                                 </button>
                             </div>
                         </div>
+                        <Link to={`${url}/settings`}>Settings</Link>
                     </div>
                     <Switch>
-                        <Router exact={false} path={url}>
-                            <Home/>
-                        </Router>
+                        <Route exact={true} path={"/logged"}>
+                            <Home />
+                        </Route>
+                        <Route exact={true} path={`${path}/settings`}>
+                            <Settings />
+                        </Route>
                     </Switch>
                 </div>
             </section>

@@ -1,14 +1,15 @@
-import {Link} from "react-router-dom";
+import {Link, useRouteMatch} from "react-router-dom";
 import logo from '../mochimo-pq-logo.svg'
+import {useEffect} from "react";
 
 export const Navbar = (props) => {
-
     const handleClick = (event) => {
         let test = document.querySelectorAll('[data-target]')
         test.forEach((item) => {
             item.classList.toggle("is-active")
         })
     }
+    let { path, url } = useRouteMatch();
     return (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
@@ -33,8 +34,7 @@ export const Navbar = (props) => {
                             </Link>
                             {props.isAuthenticated ?
                                 (<>
-                                    <Link to={"logged/settings"} className="button"> Settings </Link> <Link
-                                    to={"/mochimo_wallet"} className="button is-danger"> Logout </Link>
+                                    <Link to={"/mochimo_wallet"} className="button is-danger"> Logout </Link>
                                 </>)
                                 :
                                 null}

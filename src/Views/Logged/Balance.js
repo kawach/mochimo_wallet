@@ -39,11 +39,11 @@ const Balance = (props) => {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((tag) => {
                     console.log(tag)
-                    if (tag.address === wots) {
+                    if (tag.address === wots && parseInt(balance.status) === 1) {
                         props.UPDATE_BALANCE(balance.id, balance, "status", "1")
                         getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
                         toast.success(balance.tag + " is now activated")
-                    } else if (tag.error === "Not Found") {
+                    } else if (tag.error === "Not Found" && parseInt(balance.status) !== 2) {
                         getCurrentBlock().then(res =>
                             (res < parseInt(balance.blockStatus) + 3 ? (
                                         toast.info(tag.message + " waiting another block"), setTimeout(() => {
@@ -52,16 +52,7 @@ const Balance = (props) => {
                                     console.log("more than 3 block")
                             )
                         )
-                    }
-                    // return res.address === wots ?
-                    //     props.UPDATE_BALANCE(balance.id, balance, "status", "1") :
-                    //     (getCurrentBlock().then(res =>
-                    //         (res < parseInt(balance.blockStatus) + 3 ?(
-                    //             setTimeout(()=>{setRunEffect(!runEffect)},40000), handleRun(!runEffect)) :
-                    //             console.log("more than 3 block")
-                    //         )
-                    //     ))
-                    // return res.success ? (res.address === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
+                    } else if (parseInt(balance.status) === 2){console.log("procces transac")}
                 })
             }
         }
@@ -75,7 +66,6 @@ const Balance = (props) => {
                 const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + 1), balance.tag)
                 let TX_fee = 500
                 let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
-                console.log(balance.wots_address[0], balance.wots_address, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee)
                 let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "http://api.mochimo.org:8888/push";
@@ -163,8 +153,7 @@ const Balance = (props) => {
                             <div>
                                 <p className="heading">Total MCM</p>
                                 <div
-                                    className="title">{balance.amount_nmcm ? Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) : (
-                                    <a className="button is-loading">Loading</a>)}</div>
+                                    className="title">{balance.amount_nmcm ? Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) : balance.tag ? (<p className="button is-loading">Loading</p>) : "0"}</div>
                             </div>
                         </div>
                         <div className="level-item has-text-centered">
@@ -224,11 +213,22 @@ const Balance = (props) => {
                    title={"Send MCM"}
                    content={
                        <>
+
                            <p className={"label"}> Source </p>
-                           <div className="select is-link">
-                               <select>
-                                   <option>{balance.tag ? balance.tag : hash(wots)}</option>
-                               </select>
+                           <div className="field is-grouped">
+                               <div className="field is-grouped">
+                                   <div className="select is-link">
+                                       <select>
+                                           <option>{balance.tag ? balance.tag : hash(wots)}</option>
+                                       </select>
+                                   </div>
+                               </div>
+                               <div className="control">
+                                   <p> Balance total : </p>
+                               </div>
+                               <div className="control">
+                                   <p> { Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) } </p>
+                               </div>
                            </div>
                            <Input id={"receiver"} label={"Receiver"} type={"text"} placeholder={"********"}
                                   onChange={handleChange}/>

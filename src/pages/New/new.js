@@ -61,7 +61,7 @@ const New_Wallet = (props, dispatch) => {
                     <div className={"box"}>
                         <Textarea value={mnemonic} onChange={handleChange} id={"mnemonic"}/>
                         <button className={"button is-primary"} onClick={handleClick} id={"random"}> Generate random
-                            seed
+                            mnemonic words
                         </button>
                         <div className="field">
                             <label className="label">Password</label>
