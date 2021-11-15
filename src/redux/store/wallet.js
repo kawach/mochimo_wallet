@@ -1,5 +1,4 @@
 import {DELETE_BALANCE, SET_BALANCE, SET_WALLET, UPDATE_BALANCE, UPDATE_WALLET_NAME, UPDATE_WALLET} from "../actionTypes";
-import {getBalance} from "../../utils/walletServices";
 import {toast} from "react-toastify";
 
 const initialState = {
@@ -40,8 +39,8 @@ export default function Store(state = initialState, action) {
             return action.payload
         case UPDATE_WALLET_NAME: {
             let current = {...state}
-            // current['balances'][action.payload.id]
-            return {...state}
+            current['wallet_name'] = action.payload.name
+            return current
         }
         case SET_BALANCE: {
             return {
@@ -58,7 +57,6 @@ export default function Store(state = initialState, action) {
             toast.success(`Balance : ${action.payload.id}, Key : ${action.payload.key} updated`)
             let current = {...state}
             current['balances'][action.payload.id][action.payload.key] = action.payload.value
-
             return {...state}
         }
         case DELETE_BALANCE: {
