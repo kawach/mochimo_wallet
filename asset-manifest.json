@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/mochimo_wallet/static/css/main.7425eecf.chunk.css",
-    "main.js": "/mochimo_wallet/static/js/main.778655e8.chunk.js",
-    "main.js.map": "/mochimo_wallet/static/js/main.778655e8.chunk.js.map",
+    "main.js": "/mochimo_wallet/static/js/main.f04b672d.chunk.js",
+    "main.js.map": "/mochimo_wallet/static/js/main.f04b672d.chunk.js.map",
     "runtime-main.js": "/mochimo_wallet/static/js/runtime-main.c9a7642a.js",
     "runtime-main.js.map": "/mochimo_wallet/static/js/runtime-main.c9a7642a.js.map",
     "static/css/2.a5db4a47.chunk.css": "/mochimo_wallet/static/css/2.a5db4a47.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.a5db4a47.chunk.css",
     "static/js/2.69922728.chunk.js",
     "static/css/main.7425eecf.chunk.css",
-    "static/js/main.778655e8.chunk.js"
+    "static/js/main.f04b672d.chunk.js"
   ]
 }
