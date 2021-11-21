@@ -1,4 +1,4 @@
-import {Link, useRouteMatch} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import logo from '../mochimo-pq-logo.svg'
 import {useEffect} from "react";
 
@@ -9,7 +9,7 @@ export const Navbar = (props) => {
             item.classList.toggle("is-active")
         })
     }
-    let { path, url } = useRouteMatch();
+
     return (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
@@ -28,7 +28,7 @@ export const Navbar = (props) => {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <div className="buttons">
-                            <Link to={"/"} className="button is-primary">
+                            <Link to={props.isAuthenticated ? "/logged" : "/"} className="button is-primary">
                                 Current wallet
                                 : {props.isAuthenticated ? (props.isAuthenticated.wallet_name ? props.isAuthenticated.wallet_name : "Un-named") : "Not Connected"}
                             </Link>

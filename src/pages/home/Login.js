@@ -69,7 +69,6 @@ const Login = (props) => {
                     <div className="tabs">
                         <ul onClick={handleClick}>
                             <li><a id={"file"}>File</a></li>
-                            <li><a id={'other'}>Other method</a></li>
                             <li><a id={'recovery'}>Mnemonic phrase</a></li>
                         </ul>
                     </div>

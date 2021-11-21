@@ -1,9 +1,8 @@
 import {connect, useSelector} from "react-redux";
 import {BrowserRouter as Router, Link, Route, Switch, useRouteMatch} from "react-router-dom";
-
 import Home from "./Home";
 import {Modal} from "../../components/Modal";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Input} from "../../components/input";
 import {foutainWots, generateString, generateWots, getCurrentBlock, hash} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
@@ -11,8 +10,6 @@ import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
 import {toast} from "react-toastify";
 import Settings from "../Settings/Settings";
-
-const {Wots} = require('mochimo');
 
 const Logged = (props) => {
 
@@ -22,9 +19,8 @@ const Logged = (props) => {
     const [isActive, setIsActive] = useState()
     const wallet = useSelector(({wallet}) => wallet)
     const {path, url} = useRouteMatch()
-
     const handleDownload = () => {
-        const fileName = "wallet";
+       const fileName = wallet.wallet_name ? wallet.wallet_name : "un-named_wallet";
         const blob = new Blob([JSON.stringify(wallet)], {type: "application/json"})
         const el = document.createElement('a')
         el.href = URL.createObjectURL(blob)
@@ -119,7 +115,6 @@ const Logged = (props) => {
                        </>
                    }
             >
-                {/*  let {id,label, type, placeholder, onChange, handleBlur} = props*/}
                 <button className="button is-success" onClick={handleClick} id={"balanceCreate"}>
                     Create
                 </button>
