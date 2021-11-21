@@ -38,7 +38,6 @@ const Balance = (props) => {
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((tag) => {
-                    console.log(tag)
                     if (tag.address === wots && parseInt(balance.status) === 1) {
                         props.UPDATE_BALANCE(balance.id, balance, "status", "1")
                         getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
@@ -49,10 +48,12 @@ const Balance = (props) => {
                                         toast.info(tag.message + " waiting another block"), setTimeout(() => {
                                             handleRun()
                                         }, 40000)) :
-                                    console.log("more than 3 block")
+                                   ( props.DELETE_BALANCE(balance.id, balance),toast.error("Balance activation fail"))
                             )
                         )
-                    } else if (parseInt(balance.status) === 2){console.log("procces transac")}
+                    } else if (parseInt(balance.status) === 2) {
+                        console.log("procces transac")
+                    }
                 })
             }
         }
@@ -66,9 +67,9 @@ const Balance = (props) => {
                 const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + 1), balance.tag)
                 let TX_fee = 500
                 let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
-                let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
+                let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, 500);
                 let transaction = _arrayBufferToBase64(transaction_array)
-                let url = "http://api.mochimo.org:8888/push";
+                let url = "https://wallet.mochimo.com/rendpoint/";
                 let data = JSON.stringify({"transaction": transaction})
                 fetch(url, {
                     method: "POST",
@@ -77,14 +78,16 @@ const Balance = (props) => {
                     },
                     body: data
                 }).then((transaction) => {
-                    transaction.json().then(res => {
+                    transaction.text().then(res => {
+                        res = res.substr(0, res.length - 1)
+                        res = JSON.parse(res)
                         return res.sent === 0 ? toast.error(`${res.error}`) : (
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
                                 toast.info("TX ID : " + res.txid)
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, "test", balance.tag ? balance.tag : "", "2", change_wots, 0)
                                 props.DELETE_BALANCE(balance.id, balance)
                                 props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, block, balance.tag ? balance.tag : "", "2", change_wots, 0)
-                                props.DELETE_BALANCE(balance.id, balance)
                                 setRunEffect(!runEffect)
                             })
                         )
@@ -153,7 +156,8 @@ const Balance = (props) => {
                             <div>
                                 <p className="heading">Total MCM</p>
                                 <div
-                                    className="title">{balance.amount_nmcm ? Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) : balance.tag ? (<p className="button is-loading">Loading</p>) : "0"}</div>
+                                    className="title">{balance.amount_nmcm ? Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) : balance.tag ? (
+                                    <p className="button is-loading">Loading</p>) : "0"}</div>
                             </div>
                         </div>
                         <div className="level-item has-text-centered">
@@ -227,7 +231,7 @@ const Balance = (props) => {
                                    <p> Balance total : </p>
                                </div>
                                <div className="control">
-                                   <p> { Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9) } </p>
+                                   <p> {Number((parseInt(balance.amount_nmcm) / 1000000000)).toFixed(9)} </p>
                                </div>
                            </div>
                            <Input id={"receiver"} label={"Receiver"} type={"text"} placeholder={"********"}
@@ -255,5 +259,4 @@ function mapDispatchToProps(dispatch) {
 export default connect((state) => {
     return state
 }, mapDispatchToProps)(Balance)
-
 
