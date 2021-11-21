@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/mochimo_wallet/static/css/main.7425eecf.chunk.css",
-    "main.js": "/mochimo_wallet/static/js/main.cfa3be65.chunk.js",
-    "main.js.map": "/mochimo_wallet/static/js/main.cfa3be65.chunk.js.map",
+    "main.js": "/mochimo_wallet/static/js/main.2eb65918.chunk.js",
+    "main.js.map": "/mochimo_wallet/static/js/main.2eb65918.chunk.js.map",
     "runtime-main.js": "/mochimo_wallet/static/js/runtime-main.c9a7642a.js",
     "runtime-main.js.map": "/mochimo_wallet/static/js/runtime-main.c9a7642a.js.map",
     "static/css/2.a5db4a47.chunk.css": "/mochimo_wallet/static/css/2.a5db4a47.chunk.css",
-    "static/js/2.c460b0ba.chunk.js": "/mochimo_wallet/static/js/2.c460b0ba.chunk.js",
-    "static/js/2.c460b0ba.chunk.js.map": "/mochimo_wallet/static/js/2.c460b0ba.chunk.js.map",
+    "static/js/2.a2e2794e.chunk.js": "/mochimo_wallet/static/js/2.a2e2794e.chunk.js",
+    "static/js/2.a2e2794e.chunk.js.map": "/mochimo_wallet/static/js/2.a2e2794e.chunk.js.map",
     "static/js/3.2d8bf278.chunk.js": "/mochimo_wallet/static/js/3.2d8bf278.chunk.js",
     "static/js/3.2d8bf278.chunk.js.map": "/mochimo_wallet/static/js/3.2d8bf278.chunk.js.map",
     "index.html": "/mochimo_wallet/index.html",
     "static/css/2.a5db4a47.chunk.css.map": "/mochimo_wallet/static/css/2.a5db4a47.chunk.css.map",
     "static/css/main.7425eecf.chunk.css.map": "/mochimo_wallet/static/css/main.7425eecf.chunk.css.map",
-    "static/js/2.c460b0ba.chunk.js.LICENSE.txt": "/mochimo_wallet/static/js/2.c460b0ba.chunk.js.LICENSE.txt",
+    "static/js/2.a2e2794e.chunk.js.LICENSE.txt": "/mochimo_wallet/static/js/2.a2e2794e.chunk.js.LICENSE.txt",
     "static/media/mochimo-pq-logo.0304aae2.svg": "/mochimo_wallet/static/media/mochimo-pq-logo.0304aae2.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.c9a7642a.js",
     "static/css/2.a5db4a47.chunk.css",
-    "static/js/2.c460b0ba.chunk.js",
+    "static/js/2.a2e2794e.chunk.js",
     "static/css/main.7425eecf.chunk.css",
-    "static/js/main.cfa3be65.chunk.js"
+    "static/js/main.2eb65918.chunk.js"
   ]
 }
