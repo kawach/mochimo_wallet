@@ -85,9 +85,8 @@ const Balance = (props) => {
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
                                 toast.info("TX ID : " + res.txid)
-                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, "test", balance.tag ? balance.tag : "", "2", change_wots, 0)
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, block, balance.tag ? balance.tag : "", "2", change_wots, TX_fee)
                                 props.DELETE_BALANCE(balance.id, balance)
-                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, block, balance.tag ? balance.tag : "", "2", change_wots, 0)
                                 setRunEffect(!runEffect)
                             })
                         )
