@@ -7,7 +7,7 @@ var oldhash = require("crypto-js/sha256");
 
 
 export const foutainWots = (wots) => {
-    return fetch(`https://wallet.mochimo.com/fund/${wots}`).then(res => res.status === 200 ? (null, console.log(res)):res.json())
+    return fetch(`https://production.dark-bush-c37c.mochimo-wallet.workers.dev/?http://fountain1.mochimo.com/fund/${wots}`).then(res => res.status === 200 ? (null, console.log(res)):res.json())
 }
 
 export const resolveTag = (tag) => {
