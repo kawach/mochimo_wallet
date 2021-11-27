@@ -7,6 +7,7 @@ import {connect} from "react-redux";
 import FileInput from "../../components/fileInput";
 import {Input} from "../../components/input";
 import Textarea from "../../components/Textarea";
+import {sha256} from "../../utils/wots.mjs";
 
 const Login = (props) => {
     const [selected, setSelected] = useState()
@@ -23,8 +24,9 @@ const Login = (props) => {
                 switch (method) {
                     case "file": {
                         let wallet = handleFile
-                        if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0){
-                            props.SET_WALLET(wallet.wallet_public, wallet.wallet_password_hash,wallet.secret,wallet.many_balances, wallet.balances, wallet.wallet_name)
+                        if (wallet.wallet_password_hash.toString().localeCompare(sha256(input)) === 0){
+                            wallet.secret = xorArray(wallet.wallet_public, sha256(input))
+                            props.SET_WALLET(wallet)
                             history.push('/logged')
                         }
                         break
