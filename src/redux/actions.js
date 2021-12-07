@@ -1,5 +1,5 @@
 export const SET_WALLET = (data) => {
-    const {wallet_public, wallet_password_hash, secret, many_balance, balances, wallet_name} = data
+    const {wallet_public, wallet_password_hash, secret, many_balances, balances, wallet_name} = data
     return {
         type: "SET_WALLET",
         payload: {
@@ -7,7 +7,7 @@ export const SET_WALLET = (data) => {
             wallet_public: wallet_public,
             wallet_password_hash: wallet_password_hash,
             secret: secret,
-            many_balances: many_balance,
+            many_balances: many_balances,
             balances: balances,
             version: "1.1",
         }
