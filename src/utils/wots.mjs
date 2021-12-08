@@ -278,16 +278,16 @@ function set_hash_addr(hash, addr) {
 function set_key_and_mask(key_and_mask, addr) {
 	addr["7"] = [0,0,0,key_and_mask];
 }
-function from_int_to_byte_array(number) {
-	var out_array = [];
-	if(number==0) {
-		out_array.push(number);
+function from_int_to_byte_array(long) {
+	var byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
+
+	for ( var index = 0; index < byteArray.length; index ++ ) {
+		var byte = long & 0xff;
+		byteArray [ index ] = byte;
+		long = (long - byte) / 256 ;
 	}
-	while(number != 0) {
-		out_array.push(number & 0xff);
-		number = number >> 8;
-	}
-	return out_array;
+
+	return byteArray;
 }
 function addr_to_bytes(long) {
 	var byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
