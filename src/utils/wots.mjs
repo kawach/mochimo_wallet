@@ -289,16 +289,16 @@ function from_int_to_byte_array(number) {
 	}
 	return out_array;
 }
-function addr_to_bytes(addr) {
-	var out_bytes = [];
-	for(var i = 0; i < 8; i++) {
-		if(addr[(i.toString())] == undefined) {
-			addr[i.toString()] = [0,0,0,0];
-		}
-		var to_push = addr[(i.toString())];
-		out_bytes.pushArray(to_push);
+function addr_to_bytes(long) {
+	var byteArray = [0, 0, 0, 0, 0, 0, 0, 0];
+
+	for ( var index = 0; index < byteArray.length; index ++ ) {
+		var byte = long & 0xff;
+		byteArray [ index ] = byte;
+		long = (long - byte) / 256 ;
 	}
-	return out_bytes;
+
+	return byteArray;
 }
 function bytes_to_addr(addr_bytes) {
 	var out_addr = {"0":[0,0,0,0], "1":[0,0,0,0], "2":[0,0,0,0], "3":[0,0,0,0],
