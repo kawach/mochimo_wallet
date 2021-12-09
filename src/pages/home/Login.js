@@ -33,7 +33,7 @@ const Login = (props) => {
                             }
                         } else
                         {
-                            if (wallet.wallet_password_hash.toString().localeCompare(hash(input)) === 0) {
+                            if (wallet.wallet_password_hash.toString().localeCompare(sha256(input)) === 0) {
                                 wallet.secret = xorArray(wallet.wallet_public, sha256(input))
                                 props.SET_WALLET(wallet)
                                 history.push('/logged')
@@ -42,7 +42,16 @@ const Login = (props) => {
                         break
                     }
                     case "recovery": {
-                        props.SET_WALLET("", "", hash(input))
+                        const seed = input.toString().replaceAll(","," ").toUpperCase().trim()
+                        const wallet = {
+                            wallet_public: "",
+                            wallet_password_hash: "",
+                            secret: sha256(seed),
+                            many_balances: 0,
+                            balances: "",
+                            wallet_name: "recovered",
+                        }
+                        props.SET_WALLET(wallet)
                         history.push('/logged')
                         break
                     }

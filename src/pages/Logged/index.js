@@ -10,6 +10,7 @@ import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
 import {toast} from "react-toastify";
 import Settings from "../Settings/Settings";
+import {sha256} from "../../utils/wots.mjs";
 
 const Logged = (props) => {
 
@@ -30,25 +31,27 @@ const Logged = (props) => {
         document.body.removeChild(el);
     }
 
-    const handleClick = (event) => {
+    const handleClick = async (event) => {
         switch (event.target.id) {
             case "newBalance": {
                 setIsActive(!isActive)
                 break
             }
             case "balanceCreate" : {
-                const wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + spentInput), tagInput);
-                return tagInput ? foutainWots(Buffer.from(wots[0]).toString("hex")).then((res) => {
-                    return isEmpty(res) ? getCurrentBlock().then((block) => (toast.success(` TAG : "${tagInput}" is pending activation`),props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, block, tagInput, 0, wots, 0), setIsActive(!isActive)))
-                        : (toast.error(`Activation TAG : "${tagInput}" failed`))  //TODO: handle this error
-                }) : (
-                    getCurrentBlock().then((block) => {
-                        return (
-                            props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 0), 0, block, tagInput, "untagged", wots, 0),
-                                setIsActive(!isActive)
-                        )
-                    })
-                )
+                const wots = generateWots(sha256(sha256(wallet.secret + wallet.many_balances) + 0), tagInput);
+                const address = Buffer.from(wots[0]).toString("hex")
+                const currentBlock = await getCurrentBlock()
+                if (tagInput) {
+                    const fountain = await foutainWots(address)
+                    if (isEmpty(fountain)){
+                        toast.success(` TAG : "${tagInput}" is pending activation`)
+                        props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, currentBlock, tagInput, 0, address, 0)
+                        setIsActive(!isActive)
+                    }
+                } else {
+                    props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, "untagged", address, 0)
+                    setIsActive(!isActive)
+                }
             }
             case "random" : {
                 setTagInput(generateString(12))
@@ -72,14 +75,6 @@ const Logged = (props) => {
         }
     }
 
-    const handleBlur = (event) => {
-        switch (event.target.id) {
-            case "walletPass": {
-                setInputWallet_Secret(Array.from(hash(inputWallet_Secret)))
-                // let naked = xorArray(inputWallet_Secret,wallet.wallet_public)
-            }
-        }
-    }
     return (
         <Router>
             <section className="hero">

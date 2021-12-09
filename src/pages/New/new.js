@@ -36,7 +36,7 @@ const New_Wallet = (props, dispatch) => {
                     wallet_password_hash: passHash,
                     secret: seed,
                     many_balances: 0,
-                    version: "1.1",
+                    version: 1.1,
                 }
                 props.SET_WALLET(wallet)
                 setIsActive(!isActive)

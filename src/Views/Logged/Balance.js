@@ -14,6 +14,7 @@ import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import {DELETE_BALANCE, SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
 import {toast} from "react-toastify";
+import {sha256} from "../../utils/wots.mjs";
 
 const {Wots} = require('mochimo')
 
@@ -69,42 +70,47 @@ const Balance = (props) => {
         }
     }, [runEffect])
 
-    const handleClick = (event) => {
+    const handleClick = async (event) => {
         switch (event.target.id) {
             case "send": {
-                let source_wots = balance.wots_address[0]
-                let source_secret = balance.wots_address[1]
-                const change_wots = generateWots(hash(hash(wallet.secret + wallet.many_balances) + 1), balance.tag)
+                const wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent), balance.tag);
+                let source_wots = wots[0]
+                let source_secret = wots[1]
+                const change_wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1), balance.tag);
                 let TX_fee = 500
                 let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
-                console.log(balance.wots_address[0], balance.wots_address, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee)
-                let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
+                let transaction_array = compute_transaction(source_wots, source_secret, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
-                let url = "https://wallet.mochimo.com/rendpoint/";
+                let url = "http://api.mochimo.org:8888/push";
                 let data = JSON.stringify({"transaction": transaction})
-                fetch(url, {
+                const currentBlock = await getCurrentBlock()
+                const response = await fetch("http://api.mochimo.org:8888/push", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
                     },
                     body: data
-                }).then((transaction) => {
-                    transaction.text().then(res => {
-                        const test = JSON.parse(res.substr(0,res.length - 1))
-                        return test.sent === 0 ? toast.error(`${res.error}`) : (
-                            getCurrentBlock().then((block) => {
-                                toast.success("Transaction sent")
-                                toast.info("TX ID : " + res.txid)
-                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 1), 0, block, balance.tag ? balance.tag : "", "2", change_wots, TX_fee)
-                                props.DELETE_BALANCE(balance.id, balance)
-                                setRunEffect(!runEffect)
-                            })
-                        )
-                    })
                 })
+                const responseData = await response.json()
+                if (responseData.sent === 0){
+                    toast.error(`${responseData.error}`)
+                } else {
+                    toast.success("Transaction sent")
+                    toast.info("TX ID : " + responseData.txid)
+                    props.SET_BALANCE(wallet.many_balances,hash(hash(wallet.secret + wallet.many_balances) + (balance.many_spent + 1)), balance.tag, 0, currentBlock, balance.tag ? balance.tag : "", "2", change_wots, balance.many_spent + 1)
+                    props.DELETE_BALANCE(balance.id, balance)
+                    setRunEffect(!runEffect)
+                }
             }
             case "refresh": {
                 break
+            }
+            case "test":{
+                const wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent), balance.tag);
+                let source_wots = balance.wots_address
+                console.log(source_wots)
+                console.log(Buffer.from(wots[0]).toString("hex"))
+                console.log(Buffer.from(source_wots[0]).toString("hex"))
             }
         }
     };
@@ -157,6 +163,7 @@ const Balance = (props) => {
                     <nav className="level">
                         <div className="level-item has-text-centered">
                             <div>
+                                <button id={"test"} onClick={handleClick}> test </button>
                                 <p className="heading">Show QR code</p>
                                 <p className="title"></p>
                             </div>
