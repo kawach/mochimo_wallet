@@ -35,10 +35,12 @@ const Balance = (props) => {
     }
 
     useEffect(() => {
+        const test = generateWots(hash(hash(wallet.secret + balance.id) + 0))
+        const addtest = Buffer.from(test[0]).toString("hex")
+        console.log(getBalance(addtest))
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((tag) => {
-                    console.log(tag)
                     if (tag.address === wots) {
                         props.UPDATE_BALANCE(balance.id, balance, "status", "1")
                         getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
@@ -78,7 +80,7 @@ const Balance = (props) => {
                 console.log(balance.wots_address[0], balance.wots_address, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee)
                 let transaction_array = compute_transaction(balance.wots_address[0], balance.wots_address[1], change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
-                let url = "http://api.mochimo.org:8888/push";
+                let url = "https://wallet.mochimo.com/rendpoint/";
                 let data = JSON.stringify({"transaction": transaction})
                 fetch(url, {
                     method: "POST",
@@ -87,8 +89,9 @@ const Balance = (props) => {
                     },
                     body: data
                 }).then((transaction) => {
-                    transaction.json().then(res => {
-                        return res.sent === 0 ? toast.error(`${res.error}`) : (
+                    transaction.text().then(res => {
+                        const test = JSON.parse(res.substr(0,res.length - 1))
+                        return test.sent === 0 ? toast.error(`${res.error}`) : (
                             getCurrentBlock().then((block) => {
                                 toast.success("Transaction sent")
                                 toast.info("TX ID : " + res.txid)
