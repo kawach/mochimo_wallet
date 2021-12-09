@@ -7,6 +7,7 @@ import {bindActionCreators} from "redux";
 import {Link} from "react-router-dom";
 import {hash, xorArray} from "../../utils/walletServices";
 import Textarea from "../../components/Textarea";
+import {sha256} from "../../utils/wots.mjs";
 
 const New_Wallet = (props, dispatch) => {
     const [mnemonic, setMnemonic] = useState(undefined)
@@ -27,11 +28,17 @@ const New_Wallet = (props, dispatch) => {
                 break
             }
             case "submit": {
-                let hashed_char_array_seed = Array.from(hash(mnemonic).toUpperCase())
-                let hashed_char_array_pass = Array.from(hash(pass))
-                let _public = xorArray(hashed_char_array_seed, hashed_char_array_pass)
-                let secret = hash(mnemonic).toUpperCase()
-                props.SET_WALLET(_public,hash(pass),secret)
+                let seed = sha256(mnemonic.toString().replaceAll(","," ").toUpperCase().trim())
+                let passHash = sha256(pass)
+                let _public = xorArray(seed, passHash)
+                const wallet = {
+                    wallet_public: _public,
+                    wallet_password_hash: passHash,
+                    secret: seed,
+                    many_balances: 0,
+                    version: 1.1,
+                }
+                props.SET_WALLET(wallet)
                 setIsActive(!isActive)
             }
         }
