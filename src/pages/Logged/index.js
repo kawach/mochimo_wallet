@@ -106,7 +106,7 @@ const Logged = (props) => {
                             <Home/>
                         </Route>
                         <Route exact={true} path={`${path}/settings`}>
-                            <Settings/>
+                            <Settings wallet={wallet}/>
                         </Route>
                     </Switch>
                 </div>

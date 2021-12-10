@@ -25,8 +25,6 @@ const Balance = (props) => {
     const [onHover, setHover] = useState("");
     const [amount, setAmount] = useState();
     const [receiver, setReceiver] = useState();
-    const [balanceAmount, setBalanceAmount] = useState();
-    const [currentBalance, setCurrentBalance] = useState();
     const wallet = useSelector(({wallet}) => wallet)
     const wots = balance.wots_address
     const [runEffect, setRunEffect] = useState(true)
@@ -36,7 +34,7 @@ const Balance = (props) => {
     }
 
     useEffect(() => {
-        const test = generateWots(hash(hash(wallet.secret + balance.id) + 0))
+        const test = generateWots(hash(hash(wallet.secret + balance.id) + 0)) //TODO: Change this
         const addtest = Buffer.from(test[0]).toString("hex")
         console.log(getBalance(addtest))
         if (balance.tag) {

@@ -16,7 +16,6 @@ const Login = (props) => {
     const [input, setInput] = useState()
     const [method, setMethod] = useState("file")
     const history = useHistory()
-    // eslint-disable-next-line no-unused-vars
 
     const handleClick = (event) => {
         switch (event.target.id) {

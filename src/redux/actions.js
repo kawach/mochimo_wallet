@@ -22,6 +22,15 @@ export const UPDATE_WALLET_NAME = (name) => {
         }
     }
 }
+export const UPDATE_WALLET_PASSWORD = (password) => {
+    return {
+        type: "UPDATE_WALLET_PASSWORD",
+        payload: {
+            wallet_password_hash: password,
+        }
+    }
+}
+
 export const REFRESH_WALLET = () => {
     return {
         type: "UPDATE_WALLET_NAME",

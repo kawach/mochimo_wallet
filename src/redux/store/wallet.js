@@ -1,4 +1,4 @@
-import {DELETE_BALANCE, SET_BALANCE, SET_WALLET, UPDATE_BALANCE, UPDATE_WALLET_NAME, UPDATE_WALLET} from "../actionTypes";
+import {DELETE_BALANCE, SET_BALANCE, SET_WALLET, UPDATE_BALANCE, UPDATE_WALLET_NAME, UPDATE_WALLET, UPDATE_WALLET_PASSWORD} from "../actionTypes";
 import {toast} from "react-toastify";
 
 const initialState = {
@@ -40,6 +40,11 @@ export default function Store(state = initialState, action) {
         case UPDATE_WALLET_NAME: {
             let current = {...state}
             current['wallet_name'] = action.payload.name
+            return current
+        }
+        case UPDATE_WALLET_PASSWORD:{
+            let current = {...state}
+            current['wallet_password_hash'] = action.payload.wallet_password_hash
             return current
         }
         case SET_BALANCE: {
