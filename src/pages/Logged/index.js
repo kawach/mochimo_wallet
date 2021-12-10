@@ -4,7 +4,7 @@ import Home from "./Home";
 import {Modal} from "../../components/Modal";
 import {useState} from "react";
 import {Input} from "../../components/input";
-import {foutainWots, generateString, generateWots, getCurrentBlock, hash} from "../../utils/walletServices";
+import {foutainWots, generateString, generateWots, getCurrentBlock, resolveTag} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
@@ -21,7 +21,7 @@ const Logged = (props) => {
     const wallet = useSelector(({wallet}) => wallet)
     const {path, url} = useRouteMatch()
     const handleDownload = () => {
-       const fileName = wallet.wallet_name ? wallet.wallet_name : "un-named_wallet";
+        const fileName = wallet.wallet_name ? wallet.wallet_name : "un-named_wallet";
         const blob = new Blob([JSON.stringify(wallet)], {type: "application/json"})
         const el = document.createElement('a')
         el.href = URL.createObjectURL(blob)
@@ -39,19 +39,30 @@ const Logged = (props) => {
             }
             case "balanceCreate" : {
                 const wots = generateWots(sha256(sha256(wallet.secret + wallet.many_balances) + 0), tagInput);
-                const address = Buffer.from(wots[0]).toString("hex")
+                let address = Buffer.from(wots[0]).toString("hex")
                 const currentBlock = await getCurrentBlock()
                 if (tagInput) {
                     const fountain = await foutainWots(address)
-                    if (isEmpty(fountain)){
+                    if (isEmpty(fountain)) {
                         toast.success(` TAG : "${tagInput}" is pending activation`)
-                        props.SET_BALANCE(wallet.many_balances, hash(wallet.secret + wallet.many_balances), 0, currentBlock, tagInput, 0, address, 0)
-                        setIsActive(!isActive)
+                        props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0)
+                    } else {
+                        if (fountain.error === "Tag already exists") {
+                            const response = await resolveTag(tagInput)
+                            console.log(address)
+                            if (response.address === address) {
+                                props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0)
+                            } else {
+                                toast.error(fountain.error)
+                            }
+                        } else {
+                            toast.error(fountain.error)
+                        }
                     }
                 } else {
                     props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, "untagged", address, 0)
-                    setIsActive(!isActive)
                 }
+                setIsActive(!isActive)
             }
             case "random" : {
                 setTagInput(generateString(12))
@@ -92,10 +103,10 @@ const Logged = (props) => {
                     </div>
                     <Switch>
                         <Route exact={true} path={"/logged"}>
-                            <Home />
+                            <Home/>
                         </Route>
                         <Route exact={true} path={`${path}/settings`}>
-                            <Settings />
+                            <Settings/>
                         </Route>
                     </Switch>
                 </div>

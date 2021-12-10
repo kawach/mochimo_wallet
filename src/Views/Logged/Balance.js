@@ -28,7 +28,7 @@ const Balance = (props) => {
     const [balanceAmount, setBalanceAmount] = useState();
     const [currentBalance, setCurrentBalance] = useState();
     const wallet = useSelector(({wallet}) => wallet)
-    const wots = Buffer.from(balance.wots_address[0]).toString("hex")
+    const wots = balance.wots_address
     const [runEffect, setRunEffect] = useState(true)
 
     const handleRun = () => {
@@ -105,13 +105,6 @@ const Balance = (props) => {
             case "refresh": {
                 break
             }
-            case "test":{
-                const wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent), balance.tag);
-                let source_wots = balance.wots_address
-                console.log(source_wots)
-                console.log(Buffer.from(wots[0]).toString("hex"))
-                console.log(Buffer.from(source_wots[0]).toString("hex"))
-            }
         }
     };
 
@@ -163,7 +156,6 @@ const Balance = (props) => {
                     <nav className="level">
                         <div className="level-item has-text-centered">
                             <div>
-                                <button id={"test"} onClick={handleClick}> test </button>
                                 <p className="heading">Show QR code</p>
                                 <p className="title"></p>
                             </div>
