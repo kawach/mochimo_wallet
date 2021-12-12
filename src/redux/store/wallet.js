@@ -49,9 +49,18 @@ export default function Store(state = initialState, action) {
         }
         case SET_BALANCE: {
             return {
-                ...state, many_balances: state.many_balances + 1, balances: {
+                ...state, many_balances: action.payload.many_balances, balances: {
                     ...state.balances,
-                    [state.many_balances]: action.payload
+                    [action.payload.id]: {
+                        id: action.payload.id,
+                        status: action.payload.status,
+                        balance_hash: action.payload.balance_hash,
+                        amount_nmcm: action.payload.amount_nmcm,
+                        blockStatus: action.payload.blockStatus,
+                        tag: action.payload.tag,
+                        wots_address: action.payload.wots_address,
+                        many_spent: action.payload.many_spent,
+                    }
                 }
             }
         }
@@ -61,6 +70,7 @@ export default function Store(state = initialState, action) {
         case UPDATE_BALANCE: {
             toast.success(`Balance : ${action.payload.id}, Key : ${action.payload.key} updated`)
             let current = {...state}
+            console.log(current.balances)
             current['balances'][action.payload.id][action.payload.key] = action.payload.value
             return {...state}
         }

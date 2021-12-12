@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {hash, xorArray} from "../../utils/walletServices"
+import {hash, hexToByteArray, xorArray} from "../../utils/walletServices"
 import {bindActionCreators} from "redux";
 import {SET_WALLET} from "../../redux/actions";
 import {connect} from "react-redux";
@@ -23,17 +23,23 @@ const Login = (props) => {
                 switch (method) {
                     case "file": {
                         let wallet = handleFile
-                        const version = parseInt(wallet.version)
+                        console.log(wallet)
+                        const version = parseFloat(wallet.version)
+                        const passwordHash = wallet.wallet_password_hash || wallet.password_hash
                         if (version > 1) {
-                            if (wallet.wallet_password_hash.toString().localeCompare(sha256(input)) === 0) {
+                            if (passwordHash === "" || !passwordHash){
+                                props.SET_WALLET(wallet)
+                                history.push('/logged')
+                            } else if (passwordHash.toString().localeCompare(sha256(input)) === 0) {
                                 wallet.secret = xorArray(wallet.wallet_public, sha256(input))
                                 props.SET_WALLET(wallet)
                                 history.push('/logged')
                             }
                         } else
                         {
-                            if (wallet.wallet_password_hash.toString().localeCompare(sha256(input)) === 0) {
-                                wallet.secret = xorArray(wallet.wallet_public, sha256(input))
+                            if (passwordHash.localeCompare(Buffer.from(sha256(input)).toString("hex").toUpperCase()) === 0) {
+                                const test = hexToByteArray(wallet.mnemonic_hash)
+                                wallet.mnemonic_hash = xorArray(test, sha256(input))
                                 props.SET_WALLET(wallet)
                                 history.push('/logged')
                             }

@@ -13,11 +13,19 @@ export const foutainWots = (wots) => {
 export const resolveTag = (tag) => {
     return fetch(`https://api.mochimap.com/ledger/tag/${tag}`).then(res => res.json())
 }
-// eslint-disable-next-line no-extend-native
-String.prototype.hexToByteArray = function() {
-    var result = [];
-    for (var i = 0; i < this.length; i += 2) {
-        result.push(parseInt(this.substr(i, 2), 16));
+
+function bArr_toString(byte_array) {
+    var return_str = "";
+    for (var i = 0; i < byte_array.length; i++) {
+        return_str += String.fromCharCode(byte_array[i]);
+    }
+    return return_str;
+}
+
+const hexToByteArray = function(string) {
+    let result = [];
+    for (let i = 0; i < string.length; i += 2) {
+        result.push(parseInt(string.substr(i, 2), 16));
     }
     return result;
 }
@@ -141,4 +149,4 @@ function _arrayBufferToBase64( buffer ) {
     return b2a( binary );
 }
 
-export {generateWots, compute_transaction, _arrayBufferToBase64}
+export {generateWots, compute_transaction, _arrayBufferToBase64, hexToByteArray,bArr_toString}

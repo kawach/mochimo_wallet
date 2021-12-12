@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {generatePath, Link} from "react-router-dom";
 import {Input} from "../../components/input";
 import {connect} from "react-redux";
@@ -10,13 +10,18 @@ import {toast} from "react-toastify";
 
 const Settings = (props) => {
     const [wName, setWName] = useState()
-    const [isActive , setIsActive] = useState();
+    const [isActive, setIsActive] = useState();
     const [oldPasswordInput, setOldPasswordInput] = useState();
     const [newPasswordInput, setNewPasswordInput] = useState();
-    const [ConfirmNewPasswordInput, setConfirmNewPassword] = useState();
+    const [confirmNewPasswordInput, setConfirmNewPassword] = useState();
 
     const {wallet} = props
 
+    useEffect(() => {
+        setNewPasswordInput("")
+        setOldPasswordInput("")
+        setConfirmNewPassword("")
+    }, [isActive])
 
     const handleClick = (event) => {
         switch (event.target.id) {
@@ -26,16 +31,18 @@ const Settings = (props) => {
             }
             case "saveChangePassword": {
                 const currentPasswordHash = wallet.wallet_password_hash
-                if (!currentPasswordHash){
-                    props.UPDATE_WALLET_PASSWORD(newPasswordInput)
+                const hashedInput = sha256(newPasswordInput)
+                if (!currentPasswordHash) {
+                    props.UPDATE_WALLET_PASSWORD(hashedInput)
                     setIsActive(!isActive)
                     toast.success("Password changed")
-                } else if (currentPasswordHash.toString() === oldPasswordInput.toString()){
-                    props.UPDATE_WALLET_PASSWORD(newPasswordInput)
+                } else if (currentPasswordHash.toString() === sha256(oldPasswordInput).toString()) {
+                    props.UPDATE_WALLET_PASSWORD(hashedInput)
                     setIsActive(!isActive)
                     toast.success("Password changed")
                 } else {
-                    console.log("something went wrong")
+                    toast.error("something went wrong")
+                    setIsActive(!isActive)
                 }
                 break
             }
@@ -51,15 +58,15 @@ const Settings = (props) => {
                 break
             }
             case "oldPassword": {
-                setOldPasswordInput(sha256(value))
+                setOldPasswordInput(value)
                 break
             }
             case "newPassword": {
-                setNewPasswordInput(sha256(value))
+                setNewPasswordInput(value)
                 break
             }
             case "confirmNewPassword": {
-                setConfirmNewPassword(sha256(value))
+                setConfirmNewPassword(value)
                 break
             }
             case "saveAllChanges": {
@@ -74,20 +81,34 @@ const Settings = (props) => {
             </div>
             <div className={"box block"}>
                 <Input id={"wName"} label={"Wallet Name"} type={"text"} placeholder={"Change wallet name"}
-                       onChange={(event)=>{onChange(event)}} value={wName}/>
-                <button onClick={handleClick} id={"changePassword"}> Change password </button>
-                <button className={"button is-primary"} onClick={(event)=>{onChange(event)}} id={"saveAllChanges"}>Save all changes </button>
+                       onChange={(event) => {
+                           onChange(event)
+                       }} value={wName}/>
+                <button onClick={handleClick} id={"changePassword"}> Change password</button>
+                <button className={"button is-primary"} onClick={(event) => {
+                    onChange(event)
+                }} id={"saveAllChanges"}>Save all changes
+                </button>
             </div>
             <Modal isActive={isActive} setActive={setIsActive} save={handleClick}
                    title={"Change Password"}
                    content={
                        <>
-                           <Input id={"oldPassword"} label={"Old Password"} type={"password"} placeholder={"Old Password"}
-                                  onChange={(event)=>{onChange(event)}}/>
-                           <Input id={"newPassword"} label={"New Password"} type={"password"} placeholder={"New Password"}
-                                  onChange={(event)=>{onChange(event)}}/>
-                           <Input id={"confirmNewPassword"} label={"Confirm Password"} type={"password"} placeholder={"Confirm Password"}
-                                  onChange={(event)=>{onChange(event)}}/>
+                           <Input id={"oldPassword"} label={"Old Password"} type={"password"}
+                                  placeholder={"Old Password"} value={oldPasswordInput}
+                                  onChange={(event) => {
+                                      onChange(event)
+                                  }}/>
+                           <Input id={"newPassword"} label={"New Password"} type={"password"}
+                                  placeholder={"New Password"} value={newPasswordInput}
+                                  onChange={(event) => {
+                                      onChange(event)
+                                  }}/>
+                           <Input id={"confirmNewPassword"} label={"Confirm Password"} type={"password"}
+                                  placeholder={"Confirm Password"} value={confirmNewPasswordInput}
+                                  onChange={(event) => {
+                                      onChange(event)
+                                  }}/>
                        </>
                    }
             >
@@ -108,6 +129,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default connect((state)=> {
+export default connect((state) => {
     return state
 }, mapDispatchToProps)(Settings);

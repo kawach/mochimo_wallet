@@ -33,8 +33,8 @@ const New_Wallet = (props, dispatch) => {
                 let _public = xorArray(seed, passHash)
                 const wallet = {
                     wallet_public: _public,
-                    wallet_password_hash: passHash,
-                    secret: seed,
+                    password_hash: passHash,
+                    mnemonic_hash: seed,
                     many_balances: 0,
                     version: 1.1,
                 }

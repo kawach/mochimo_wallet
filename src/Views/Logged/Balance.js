@@ -5,7 +5,8 @@ import {
     getBalance,
     getCurrentBlock,
     hash,
-    resolveTag
+    resolveTag,
+    hexToByteArray
 } from "../../utils/walletServices";
 import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
@@ -50,19 +51,10 @@ const Balance = (props) => {
                                         toast.info(tag.message + " waiting another block"), setTimeout(() => {
                                             handleRun()
                                         }, 40000)) :
-                                    console.log("more than 3 block")
+                                    props.UPDATE_BALANCE(balance.id, balance, "status", 12)
                             )
                         )
                     }
-                    // return res.address === wots ?
-                    //     props.UPDATE_BALANCE(balance.id, balance, "status", "1") :
-                    //     (getCurrentBlock().then(res =>
-                    //         (res < parseInt(balance.blockStatus) + 3 ?(
-                    //             setTimeout(()=>{setRunEffect(!runEffect)},40000), handleRun(!runEffect)) :
-                    //             console.log("more than 3 block")
-                    //         )
-                    //     ))
-                    // return res.success ? (res.address === wots ? props.UPDATE_BALANCE(balance.id, balance, "status", "1") : (getCurrentBlock().then(res => (res < parseInt(balance.blockStatus) + 3 ? console.log("less than 3 block", res) : console.log("more than 3 block")),setTimeout(()=>{setRunEffect(!runEffect)},40000)))) : handleRun()
                 })
             }
         }
@@ -71,13 +63,19 @@ const Balance = (props) => {
     const handleClick = async (event) => {
         switch (event.target.id) {
             case "send": {
-                const wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent), balance.tag);
+                if(receiver.length <= 24){
+                    let response = await resolveTag(receiver)
+                    let {address} = await response
+                    await setReceiver(address)
+                }
+                const balanceHash = sha256(sha256(wallet.secret + balance.id) + balance.many_spent)
+                const wots = generateWots(balanceHash, balance.tag);
                 let source_wots = wots[0]
                 let source_secret = wots[1]
                 const change_wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1), balance.tag);
                 let TX_fee = 500
                 let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
-                let transaction_array = compute_transaction(source_wots, source_secret, change_wots[0], receiver.hexToByteArray(), amount, remaining_amount, TX_fee);
+                let transaction_array = compute_transaction(source_wots, source_secret, change_wots[0], hexToByteArray(receiver), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "http://api.mochimo.org:8888/push";
                 let data = JSON.stringify({"transaction": transaction})
@@ -95,13 +93,21 @@ const Balance = (props) => {
                 } else {
                     toast.success("Transaction sent")
                     toast.info("TX ID : " + responseData.txid)
-                    props.SET_BALANCE(wallet.many_balances,hash(hash(wallet.secret + wallet.many_balances) + (balance.many_spent + 1)), balance.tag, 0, currentBlock, balance.tag ? balance.tag : "", "2", change_wots, balance.many_spent + 1)
-                    props.DELETE_BALANCE(balance.id, balance)
+                    props.SET_BALANCE(balance.id,balanceHash,remaining_amount,currentBlock,balance.tag,2,Buffer.from(wots[0]).toString("hex"),balance.many_spent + 1)
                     setRunEffect(!runEffect)
                 }
             }
             case "refresh": {
                 break
+            }
+            case "test" :{
+                console.log("test")
+                const currentBlock = await getCurrentBlock()
+                const balanceHash = sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1)
+                const wots = generateWots(balanceHash, balance.tag);
+                let change_wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1), balance.tag);
+                props.SET_BALANCE(balance.id,balanceHash,0,currentBlock,balance.tag,2,Buffer.from(wots[0]).toString("hex"),balance.many_spent + 1, wallet.many_balances)
+
             }
         }
     };
@@ -141,6 +147,9 @@ const Balance = (props) => {
                 <p className="card-header-title">
                     TAG : {balance.tag}
                 </p>
+                <button onClick={handleClick} id={"test"}>
+                test
+                </button>
                 <button className="card-header-icon" aria-label="more options" onClick={() => {
                     getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", parseInt(parseFloat(result).toFixed(9))))
                 }}>

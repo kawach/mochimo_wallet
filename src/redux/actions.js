@@ -1,14 +1,15 @@
 export const SET_WALLET = (data) => {
-    const {wallet_public, wallet_password_hash, secret, many_balances, balances, wallet_name} = data
+    const {wallet_public, password_hash, mnemonic_hash, many_balances, balances, wallet_name,settings} = data
     return {
         type: "SET_WALLET",
         payload: {
             wallet_name: wallet_name,
             wallet_public: wallet_public,
-            wallet_password_hash: wallet_password_hash,
-            secret: secret,
+            password_hash: password_hash,
+            mnemonic_hash: mnemonic_hash,
             many_balances: many_balances,
             balances: balances,
+            settings: settings,
             version: "1.1",
         }
     }
@@ -37,7 +38,7 @@ export const REFRESH_WALLET = () => {
     }
 }
 
-export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, status, wots_address, many_spent) => {
+export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, status, wots_address, many_spent, many_balances) => {
     return {
         type: "SET_BALANCE",
         payload: {
@@ -49,6 +50,7 @@ export const SET_BALANCE = (id, balance_hash, amount_nmc, blockStatus, tag, stat
             tag: tag,
             wots_address: wots_address,
             many_spent: many_spent,
+            many_balances:many_balances
         }
     }
 }

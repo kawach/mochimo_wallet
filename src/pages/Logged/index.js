@@ -45,13 +45,13 @@ const Logged = (props) => {
                     const fountain = await foutainWots(address)
                     if (isEmpty(fountain)) {
                         toast.success(` TAG : "${tagInput}" is pending activation`)
-                        props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0)
+                        props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0, wallet.many_balances + 1)
                     } else {
                         if (fountain.error === "Tag already exists") {
                             const response = await resolveTag(tagInput)
                             console.log(address)
                             if (response.address === address) {
-                                props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0)
+                                props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0, wallet.many_balances + 1)
                             } else {
                                 toast.error(fountain.error)
                             }
@@ -60,7 +60,7 @@ const Logged = (props) => {
                         }
                     }
                 } else {
-                    props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, "untagged", address, 0)
+                    props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 1, address, 0, wallet.many_balances + 1)
                 }
                 setIsActive(!isActive)
             }
