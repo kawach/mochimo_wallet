@@ -27,7 +27,9 @@ const Balance = (props) => {
     const [amount, setAmount] = useState();
     const [receiver, setReceiver] = useState();
     const wallet = useSelector(({wallet}) => wallet)
-    const wots = balance.wots_address
+    let wots = balance.wots_address
+    let wotsType = typeof wots
+    wots = wotsType === "String" ? wots : Buffer.from(wots).toString("hex")
     const [runEffect, setRunEffect] = useState(true)
 
     const handleRun = () => {
@@ -37,7 +39,6 @@ const Balance = (props) => {
     useEffect(() => {
         const test = generateWots(hash(hash(wallet.secret + balance.id) + 0)) //TODO: Change this
         const addtest = Buffer.from(test[0]).toString("hex")
-        console.log(getBalance(addtest))
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((tag) => {
@@ -93,21 +94,12 @@ const Balance = (props) => {
                 } else {
                     toast.success("Transaction sent")
                     toast.info("TX ID : " + responseData.txid)
-                    props.SET_BALANCE(balance.id,balanceHash,remaining_amount,currentBlock,balance.tag,2,Buffer.from(wots[0]).toString("hex"),balance.many_spent + 1)
+                    props.SET_BALANCE(balance.id,balanceHash,remaining_amount,currentBlock,balance.tag,2,Buffer.from(wots[0]).toString("hex"),balance.many_spent + 1, wallet.many_balances)
                     setRunEffect(!runEffect)
                 }
             }
             case "refresh": {
                 break
-            }
-            case "test" :{
-                console.log("test")
-                const currentBlock = await getCurrentBlock()
-                const balanceHash = sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1)
-                const wots = generateWots(balanceHash, balance.tag);
-                let change_wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1), balance.tag);
-                props.SET_BALANCE(balance.id,balanceHash,0,currentBlock,balance.tag,2,Buffer.from(wots[0]).toString("hex"),balance.many_spent + 1, wallet.many_balances)
-
             }
         }
     };
@@ -147,11 +139,8 @@ const Balance = (props) => {
                 <p className="card-header-title">
                     TAG : {balance.tag}
                 </p>
-                <button onClick={handleClick} id={"test"}>
-                test
-                </button>
                 <button className="card-header-icon" aria-label="more options" onClick={() => {
-                    getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", parseInt(parseFloat(result).toFixed(9))))
+                    getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id , balance, "amount_nmcm", parseInt(parseFloat(result).toFixed(9))))
                 }}>
                       <span className="icon">
                         <i className="fas fa-sync" aria-hidden="true"></i>
