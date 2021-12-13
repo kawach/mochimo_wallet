@@ -78,10 +78,10 @@ const Balance = (props) => {
                 let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
                 let transaction_array = compute_transaction(source_wots, source_secret, change_wots[0], hexToByteArray(receiver), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
-                let url = "http://api.mochimo.org:8888/push";
+                let url = "https://wallet.mochimo.com/rendpoint/";
                 let data = JSON.stringify({"transaction": transaction})
                 const currentBlock = await getCurrentBlock()
-                const response = await fetch("http://api.mochimo.org:8888/push", {
+                const response = await fetch(url, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/x-www-form-urlencoded"
