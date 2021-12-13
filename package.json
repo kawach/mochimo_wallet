@@ -20,6 +20,7 @@
     "react-scripts": "4.0.3",
     "react-toastify": "^8.1.0",
     "redux": "^4.1.2",
+    "sass-loader": "^12.4.0",
     "underscore": "^1.13.1",
     "web-vitals": "^1.0.1",
     "ws": "^8.3.0"
