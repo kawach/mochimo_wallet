@@ -2,9 +2,9 @@ import {connect, useSelector} from "react-redux";
 import {BrowserRouter as Router, Link, Route, Switch, useRouteMatch} from "react-router-dom";
 import Home from "./Home";
 import {Modal} from "../../components/Modal";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Input} from "../../components/input";
-import {foutainWots, generateString, generateWots, getCurrentBlock, resolveTag} from "../../utils/walletServices";
+import {foutainWots, generateString, generateWots, getCurrentBlock, resolveTag, hash} from "../../utils/walletServices";
 import {bindActionCreators} from "redux";
 import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
@@ -16,6 +16,7 @@ const Logged = (props) => {
 
     const [tagInput, setTagInput] = useState(undefined)
     const [spentInput, setSpentInput] = useState(0)
+    const [fountainInput, setFountainInput] = useState("https://wallet.mochimo.com/fund/")
     const [inputWallet_Secret, setInputWallet_Secret] = useState()
     const [isActive, setIsActive] = useState()
     const wallet = useSelector(({wallet}) => wallet)
@@ -38,20 +39,19 @@ const Logged = (props) => {
                 break
             }
             case "balanceCreate" : {
-                const wots = generateWots(sha256(sha256(wallet.secret + wallet.many_balances) + 0), tagInput);
+                const wots = generateWots(hash(hash(wallet.mnemonic_hash + wallet.many_balances) + 0), tagInput);
                 let address = Buffer.from(wots[0]).toString("hex")
                 const currentBlock = await getCurrentBlock()
                 if (tagInput) {
-                    const fountain = await foutainWots(address)
+                    const fountain = await foutainWots(address, fountainInput)
                     if (isEmpty(fountain)) {
                         toast.success(` TAG : "${tagInput}" is pending activation`)
-                        props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0, wallet.many_balances + 1)
+                        props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.mnemonic_hash + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, spentInput, wallet.many_balances + 1)
                     } else {
                         if (fountain.error === "Tag already exists") {
                             const response = await resolveTag(tagInput)
-                            console.log(address)
                             if (response.address === address) {
-                                props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, 0, wallet.many_balances + 1)
+                                props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 0, address, spentInput, wallet.many_balances + 1)
                             } else {
                                 toast.error(fountain.error)
                             }
@@ -60,7 +60,7 @@ const Logged = (props) => {
                         }
                     }
                 } else {
-                    props.SET_BALANCE(wallet.many_balances, sha256(sha256(wallet.secret + wallet.many_balances) + 0), 0, currentBlock, tagInput, 1, address, 0, wallet.many_balances + 1)
+                    props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.mnemonic_hash + wallet.many_balances) + 0), 0, currentBlock, tagInput, 1, address, spentInput, wallet.many_balances + 1)
                 }
                 setIsActive(!isActive)
             }
@@ -70,6 +70,11 @@ const Logged = (props) => {
             }
         }
     }
+    useEffect(()=>{
+        setFountainInput("https://wallet.mochimo.com/fund/")
+        setTagInput("")
+    },[isActive])
+
     const handleChange = (event) => {
         switch (event.target.id) {
             case "tag": {
@@ -82,6 +87,11 @@ const Logged = (props) => {
             }
             case "spent": {
                 setSpentInput(event.target.value)
+                break
+            }
+            case "fountain": {
+                setFountainInput(event.target.value)
+                break
             }
         }
     }
@@ -117,6 +127,10 @@ const Logged = (props) => {
                        <>
                            <Input id={"tag"} label={"Tag"} type={"text"} placeholder={"Enter a tag"}
                                   onChange={handleChange} value={tagInput}/>
+                           <Input id={"spent"} label={"spent"} type={"text"} placeholder={"Enter a spent times"}
+                                  onChange={handleChange} value={spentInput}/>
+                           <Input id={"fountain"} label={"fountain"} type={"text"} placeholder={"Not required"}
+                                  onChange={handleChange} value={fountainInput}/>
                            <button onClick={handleClick} id={"random"} className={"button is-info"}> random tag</button>
                        </>
                    }

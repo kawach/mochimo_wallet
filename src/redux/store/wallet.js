@@ -69,9 +69,8 @@ export default function Store(state = initialState, action) {
         }
         case UPDATE_BALANCE: {
             toast.success(`Balance : ${action.payload.id}, Key : ${action.payload.key} updated`)
-            let current = {...state}
-            console.log(current.balances)
-            current['balances'][action.payload.id][action.payload.key] = action.payload.value
+            let current = action.payload.balance
+            current[action.payload.key] = action.payload.value
             return {...state}
         }
         case DELETE_BALANCE: {

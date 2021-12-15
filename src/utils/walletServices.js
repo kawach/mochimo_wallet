@@ -2,12 +2,13 @@
 import CryptoJs from "crypto-js";
 import {byte_copy, sha256, from_int_to_byte_array, wots_sign} from "./wots.mjs";
 import {wots_public_key_gen} from "./wots.mjs";
-import {useCallback, useEffect, useState} from "react";
 var oldhash = require("crypto-js/sha256");
 
+export const foutainWots = async (wots, fountain = "https://wallet.mochimo.com/fund/") => {
 
-export const foutainWots = (wots) => {
-    return fetch(`https://production.dark-bush-c37c.mochimo-wallet.workers.dev/?http://fountain1.mochimo.com/fund/${wots}`).then(res => res.status === 200 ? (null, console.log(res)):res.json())
+    const response = fetch(`${fountain + wots}`)
+    console.log(response)
+    return fetch(`https://production.dark-bush-c37c.mochimo-wallet.workers.dev/${fountain + wots}`).then(res => res.status === 200 ? (null, console.log(res)):res.json())
 }
 
 export const resolveTag = (tag) => {
@@ -109,8 +110,10 @@ function compute_transaction(source_wots, source_secret, change_wots, destinatio
 
     if(source_wots.length !== 2208 || change_wots.length !== 2208 || destination_wots.length !== 2208) {
         console.log("the input parameters are wrong")
+        console.table({source : source_wots.length,change : change_wots.length, destination : destination_wots.length})
         return false;
     }
+
     message.pushArray(source_wots);
     message.pushArray(destination_wots);
     message.pushArray(change_wots);

@@ -46,6 +46,11 @@ const Settings = (props) => {
                 }
                 break
             }
+            case "saveAllChanges":{
+                console.log("test")
+                props.UPDATE_WALLET_NAME(wName)
+                toast.success("Wallet name changed")
+            }
         }
     }
 
@@ -85,9 +90,7 @@ const Settings = (props) => {
                            onChange(event)
                        }} value={wName}/>
                 <button onClick={handleClick} id={"changePassword"}> Change password</button>
-                <button className={"button is-primary"} onClick={(event) => {
-                    onChange(event)
-                }} id={"saveAllChanges"}>Save all changes
+                <button className={"button is-primary"} onClick={handleClick} id={"saveAllChanges"}>Save all changes
                 </button>
             </div>
             <Modal isActive={isActive} setActive={setIsActive} save={handleClick}

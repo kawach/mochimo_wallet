@@ -28,11 +28,10 @@ const New_Wallet = (props, dispatch) => {
                 break
             }
             case "submit": {
-                let seed = sha256(mnemonic.toString().replaceAll(","," ").toUpperCase().trim())
-                let passHash = sha256(pass)
-                let _public = xorArray(seed, passHash)
+                let seed = hash(mnemonic.toString().replaceAll(","," "))
+                let passHash = hash(pass)
                 const wallet = {
-                    wallet_public: _public,
+                    // wallet_public: _public,
                     password_hash: passHash,
                     mnemonic_hash: seed,
                     many_balances: 0,

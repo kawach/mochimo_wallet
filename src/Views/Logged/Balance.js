@@ -5,8 +5,8 @@ import {
     getBalance,
     getCurrentBlock,
     hash,
-    resolveTag,
-    hexToByteArray
+    hexToByteArray,
+    resolveTag
 } from "../../utils/walletServices";
 import {Modal} from "../../components/Modal";
 import {Input} from "../../components/input";
@@ -27,24 +27,20 @@ const Balance = (props) => {
     const [amount, setAmount] = useState();
     const [receiver, setReceiver] = useState();
     const wallet = useSelector(({wallet}) => wallet)
-    let wots = balance.wots_address
-    let wotsType = typeof wots
-    wots = wotsType === "String" ? wots : Buffer.from(wots).toString("hex")
+    let wots = generateWots(hash(hash(wallet.mnemonic_hash + balance.id) + balance.many_spent),balance.tag)
+    const address = Buffer.from(wots[0]).toString("hex")
     const [runEffect, setRunEffect] = useState(true)
-
     const handleRun = () => {
         setRunEffect(!runEffect)
     }
-
+    console.log(address)
     useEffect(() => {
-        const test = generateWots(hash(hash(wallet.secret + balance.id) + 0)) //TODO: Change this
-        const addtest = Buffer.from(test[0]).toString("hex")
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
                 resolveTag(balance.tag).then((tag) => {
-                    if (tag.address === wots) {
+                    if (tag.address === address) {
                         props.UPDATE_BALANCE(balance.id, balance, "status", "1")
-                        getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
+                        getBalance(address).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", result))
                         toast.success(balance.tag + " is now activated")
                     } else if (tag.error === "Not Found") {
                         getCurrentBlock().then(res =>
@@ -64,19 +60,20 @@ const Balance = (props) => {
     const handleClick = async (event) => {
         switch (event.target.id) {
             case "send": {
-                if(receiver.length <= 24){
+                let wots_receiver = receiver
+                if (wots_receiver.length <= 24) {
                     let response = await resolveTag(receiver)
                     let {address} = await response
-                    await setReceiver(address)
+                    wots_receiver = address
                 }
-                const balanceHash = sha256(sha256(wallet.secret + balance.id) + balance.many_spent)
-                const wots = generateWots(balanceHash, balance.tag);
+                const balanceHash = hash(hash(wallet.mnemonic_hash + balance.id) + (balance.many_spent + 1))
                 let source_wots = wots[0]
                 let source_secret = wots[1]
-                const change_wots = generateWots(sha256(sha256(wallet.secret + balance.id) + balance.many_spent + 1), balance.tag);
+                const change_wots = generateWots(balanceHash ,balance.tag)
+                const change_wots_address = Buffer.from(change_wots[0]).toString("hex")
                 let TX_fee = 500
                 let remaining_amount = balance.amount_nmcm - (amount + TX_fee);
-                let transaction_array = compute_transaction(source_wots, source_secret, change_wots[0], hexToByteArray(receiver), amount, remaining_amount, TX_fee);
+                let transaction_array = compute_transaction(source_wots, source_secret, change_wots[0], hexToByteArray(wots_receiver), amount, remaining_amount, TX_fee);
                 let transaction = _arrayBufferToBase64(transaction_array)
                 let url = "https://wallet.mochimo.com/rendpoint/";
                 let data = JSON.stringify({"transaction": transaction})
@@ -88,13 +85,15 @@ const Balance = (props) => {
                     },
                     body: data
                 })
-                const responseData = await response.json()
-                if (responseData.sent === 0){
+                let responseData = await response.text()
+                responseData = JSON.parse(responseData.substr(0, responseData.length - 1))
+                if (responseData.sent === 0) {
                     toast.error(`${responseData.error}`)
+                    props.SET_BALANCE(balance.id, balanceHash, remaining_amount, currentBlock, balance.tag, 2, change_wots_address, balance.many_spent + 1, wallet.many_balances)
                 } else {
                     toast.success("Transaction sent")
                     toast.info("TX ID : " + responseData.txid)
-                    props.SET_BALANCE(balance.id,balanceHash,remaining_amount,currentBlock,balance.tag,2,Buffer.from(wots[0]).toString("hex"),balance.many_spent + 1, wallet.many_balances)
+                    props.SET_BALANCE(balance.id, balanceHash, remaining_amount, currentBlock, balance.tag, 2, Buffer.from(change_wots[0]).toString("hex"), balance.many_spent + 1, wallet.many_balances)
                     setRunEffect(!runEffect)
                 }
             }
@@ -140,7 +139,7 @@ const Balance = (props) => {
                     TAG : {balance.tag}
                 </p>
                 <button className="card-header-icon" aria-label="more options" onClick={() => {
-                    getBalance(wots).then(result => props.UPDATE_BALANCE(balance.id , balance, "amount_nmcm", parseInt(parseFloat(result).toFixed(9))))
+                    getBalance(address).then(result => props.UPDATE_BALANCE(balance.id, balance, "amount_nmcm", parseInt(parseFloat(result).toFixed(9))))
                 }}>
                       <span className="icon">
                         <i className="fas fa-sync" aria-hidden="true"></i>
@@ -191,7 +190,7 @@ const Balance = (props) => {
                                         <div className="dropdown-menu" id="dropdown-menu" role="menu">
                                             <div className="dropdown-content">
                                                 <button className="dropdown-item button" onClick={() => {
-                                                    navigator.clipboard.writeText(wots)
+                                                    navigator.clipboard.writeText(address)
                                                 }}>
                                                     Copy Wots
                                                 </button>
@@ -224,7 +223,7 @@ const Balance = (props) => {
                            <p className={"label"}> Source </p>
                            <div className="select is-link">
                                <select>
-                                   <option>{balance.tag ? balance.tag : hash(wots)}</option>
+                                   <option>{balance.tag ? balance.tag : hash(address)}</option>
                                </select>
                            </div>
                            <Input id={"receiver"} label={"Receiver"} type={"text"} placeholder={"********"}
