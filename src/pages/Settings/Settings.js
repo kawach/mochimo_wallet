@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {generatePath, Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Input} from "../../components/input";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -51,10 +51,12 @@ const Settings = (props) => {
                 props.UPDATE_WALLET_NAME(wName)
                 toast.success("Wallet name changed")
             }
+                break;
+            default:
+                break;
         }
     }
 
-    //    let {id,label, type, placeholder, onChange, handleBlur, value} = props
     const onChange = (event) => {
         const value = event.target.value
         switch (event.target.id) {
@@ -77,6 +79,8 @@ const Settings = (props) => {
             case "saveAllChanges": {
                 break
             }
+            default:
+                break;
         }
     }
     return (

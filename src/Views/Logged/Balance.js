@@ -15,9 +15,6 @@ import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
 import {DELETE_BALANCE, SET_BALANCE, UPDATE_BALANCE} from "../../redux/actions";
 import {toast} from "react-toastify";
-import {sha256} from "../../utils/wots.mjs";
-
-const {Wots} = require('mochimo')
 
 const Balance = (props) => {
     let {balance} = props
@@ -55,7 +52,7 @@ const Balance = (props) => {
                 })
             }
         }
-    }, [runEffect])
+    }, [address, balance, handleRun, props, runEffect])
 
     const handleClick = async (event) => {
         switch (event.target.id) {
@@ -96,10 +93,13 @@ const Balance = (props) => {
                     props.SET_BALANCE(balance.id, balanceHash, remaining_amount, currentBlock, balance.tag, 2, Buffer.from(change_wots[0]).toString("hex"), balance.many_spent + 1, wallet.many_balances)
                     setRunEffect(!runEffect)
                 }
+                break;
             }
             case "refresh": {
-                break
+                break;
             }
+            default:
+                break;
         }
     };
 
@@ -117,6 +117,8 @@ const Balance = (props) => {
 
                 break
             }
+            default:
+                break;
         }
     };
     const handleHover = (event) => {
@@ -129,6 +131,8 @@ const Balance = (props) => {
                 setHover("")
                 break
             }
+            default:
+                break;
         }
     }
 

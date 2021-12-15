@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {useHistory} from "react-router-dom";
-import {bArr_toString, hash, hexToByteArray, xorArray} from "../../utils/walletServices"
+import {hash} from "../../utils/walletServices"
 import {bindActionCreators} from "redux";
 import {SET_WALLET} from "../../redux/actions";
 import {connect} from "react-redux";
@@ -10,7 +10,6 @@ import Textarea from "../../components/Textarea";
 import {sha256} from "../../utils/wots.mjs";
 
 const Login = (props) => {
-    const [selected, setSelected] = useState()
     const [file, setFile] = useState(null)
     const [handleFile, setHandleFile] = useState(null)
     const [input, setInput] = useState()
@@ -20,13 +19,13 @@ const Login = (props) => {
     const handleClick = (event) => {
         switch (event.target.id) {
             case "submit" : {
-                switch (method) {
-                    case "file": {
+                if (method === "file") {
+                    {
                         let wallet = handleFile
                         const version = parseFloat(wallet.version)
                         const passwordHash = wallet.wallet_password_hash || wallet.password_hash
                         if (version > 1) {
-                            if (passwordHash === "" || !passwordHash){
+                            if (passwordHash === "" || !passwordHash) {
                                 props.SET_WALLET(wallet)
                                 history.push('/logged')
                             } else if (passwordHash.toString().localeCompare(hash(input)) === 0) {
@@ -36,8 +35,7 @@ const Login = (props) => {
                                 props.SET_WALLET(wallet)
                                 history.push('/logged')
                             }
-                        } else
-                        {
+                        } else {
                             if (passwordHash.localeCompare(Buffer.from(sha256(input)).toString("hex").toUpperCase()) === 0) {
                                 // wallet.mnemonic_hash = xorArray(hexToByteArray(wallet.mnemonic_hash), sha256(input))
                                 console.log(wallet.mnemonic_hash)
@@ -45,10 +43,11 @@ const Login = (props) => {
                                 history.push('/logged')
                             }
                         }
-                        break
+
                     }
-                    case "recovery": {
-                        const seed = input.toString().replaceAll(","," ").trim()
+                } else if (method === "recovery") {
+                    {
+                        const seed = input.toString().replaceAll(",", " ").trim()
                         const wallet = {
                             mnemonic_hash: hash(seed),
                             many_balances: 0,
@@ -57,7 +56,7 @@ const Login = (props) => {
                         }
                         props.SET_WALLET(wallet)
                         history.push('/logged')
-                        break
+
                     }
                 }
             }
@@ -70,6 +69,8 @@ const Login = (props) => {
                 setMethod("file")
                 break
             }
+            default:
+                break;
         }
 
     }

@@ -1,11 +1,5 @@
-import {useState} from "react";
-import {isArray} from "underscore";
-import {render} from "react-dom";
-import {isUndefined} from "lodash/lang";
-
 const Modal = (props)=> {
     let isActive = props.isActive ? "is-active" : "none"
-    const [active, setActive] = useState()
     return(
         <div className={isActive + " modal"}>
             <div className="modal-background" onClick={()=>{props.setActive(!props.isActive)}}></div>

@@ -1,6 +1,5 @@
-import {Link, useLocation} from "react-router-dom";
+import {Link} from "react-router-dom";
 import logo from '../mochimo-pq-logo.svg'
-import {useEffect} from "react";
 
 export const Navbar = (props) => {
     const handleClick = (event) => {
@@ -13,8 +12,8 @@ export const Navbar = (props) => {
     return (
         <nav className="navbar is-5" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
-                {props.isAuthenticated ? <Link to={"/logged"}><img src={logo} style={{height: "60px"}}/></Link> :
-                    <Link to={"/"}><img src={logo} style={{height: "60px"}}/></Link>}
+                {props.isAuthenticated ? <Link to={"/logged"}><img src={logo} style={{height: "60px"}} alt={"Mochimo Logo"}/></Link> :
+                    <Link to={"/"}><img src={logo} style={{height: "60px"}} alt={"Mochimo Logo"}/></Link>}
 
                 <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" onClick={handleClick}
                    data-target="navbarBasicExample">

@@ -1,21 +1,18 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import _ from 'lodash'
 import {Modal} from "../../components/Modal";
 import {connect} from "react-redux";
 import {SET_WALLET} from "../../redux/actions";
 import {bindActionCreators} from "redux";
 import {Link} from "react-router-dom";
-import {hash, xorArray} from "../../utils/walletServices";
+import {hash} from "../../utils/walletServices";
 import Textarea from "../../components/Textarea";
-import {sha256} from "../../utils/wots.mjs";
 
-const New_Wallet = (props, dispatch) => {
+const New_Wallet = (props) => {
     const [mnemonic, setMnemonic] = useState(undefined)
     const [pass, setPass] = useState()
-    const [hashedPass, setHashedPass] = useState()
     const [isActive, setIsActive] = useState(false)
     const mnemonicWords = require('mnemonic-words');
-    const random = Math.floor(Math.random() * mnemonicWords.length);
 
     const handleClick = event => {
         switch (event.target.id) {
@@ -39,7 +36,9 @@ const New_Wallet = (props, dispatch) => {
                 }
                 props.SET_WALLET(wallet)
                 setIsActive(!isActive)
+                break
             }
+            default : break
         }
     }
 
@@ -53,6 +52,8 @@ const New_Wallet = (props, dispatch) => {
                 setMnemonic(event.target.value)
                 break
             }
+            default:
+                break;
         }
     }
 

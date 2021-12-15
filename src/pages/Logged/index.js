@@ -10,17 +10,16 @@ import {SET_BALANCE} from "../../redux/actions";
 import {isEmpty} from "lodash/lang";
 import {toast} from "react-toastify";
 import Settings from "../Settings/Settings";
-import {sha256} from "../../utils/wots.mjs";
 
 const Logged = (props) => {
 
     const [tagInput, setTagInput] = useState(undefined)
     const [spentInput, setSpentInput] = useState(0)
     const [fountainInput, setFountainInput] = useState("https://wallet.mochimo.com/fund/")
-    const [inputWallet_Secret, setInputWallet_Secret] = useState()
     const [isActive, setIsActive] = useState()
     const wallet = useSelector(({wallet}) => wallet)
     const {path, url} = useRouteMatch()
+
     const handleDownload = () => {
         const fileName = wallet.wallet_name ? wallet.wallet_name : "un-named_wallet";
         const blob = new Blob([JSON.stringify(wallet)], {type: "application/json"})
@@ -63,11 +62,14 @@ const Logged = (props) => {
                     props.SET_BALANCE(wallet.many_balances, hash(hash(wallet.mnemonic_hash + wallet.many_balances) + 0), 0, currentBlock, tagInput, 1, address, spentInput, wallet.many_balances + 1)
                 }
                 setIsActive(!isActive)
+                break;
             }
             case "random" : {
                 setTagInput(generateString(12))
-                break
+                break;
             }
+            default:
+                break;
         }
     }
     useEffect(()=>{
@@ -81,10 +83,6 @@ const Logged = (props) => {
                 setTagInput(event.target.value)
                 break
             }
-            case "walletPass": {
-                setInputWallet_Secret(event.target.value)
-                break
-            }
             case "spent": {
                 setSpentInput(event.target.value)
                 break
@@ -93,6 +91,8 @@ const Logged = (props) => {
                 setFountainInput(event.target.value)
                 break
             }
+            default:
+                break;
         }
     }
 
