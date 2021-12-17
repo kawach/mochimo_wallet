@@ -8,8 +8,6 @@ import {
     hexToByteArray,
     resolveTag
 } from "../../utils/walletServices";
-import {Modal} from "../../components/Modal";
-import {Input} from "../../components/input";
 import {useEffect, useState} from "react";
 import {connect, useSelector} from "react-redux";
 import {bindActionCreators} from "redux";
@@ -19,6 +17,7 @@ import {toast} from "react-toastify";
 const Balance = (props) => {
     let {balance} = props
     balance = balance[1]
+
     const [isActive, setIsActive] = useState();
     const [onHover, setHover] = useState("");
     const [amount, setAmount] = useState();
@@ -27,10 +26,11 @@ const Balance = (props) => {
     let wots = generateWots(hash(hash(wallet.mnemonic_hash + balance.id) + balance.many_spent),balance.tag)
     const address = Buffer.from(wots[0]).toString("hex")
     const [runEffect, setRunEffect] = useState(true)
+
     const handleRun = () => {
         setRunEffect(!runEffect)
     }
-    console.log(address)
+
     useEffect(() => {
         if (balance.tag) {
             if (parseInt(balance.status) !== 1) {
@@ -86,7 +86,6 @@ const Balance = (props) => {
                 responseData = JSON.parse(responseData.substr(0, responseData.length - 1))
                 if (responseData.sent === 0) {
                     toast.error(`${responseData.error}`)
-                    props.SET_BALANCE(balance.id, balanceHash, remaining_amount, currentBlock, balance.tag, 2, change_wots_address, balance.many_spent + 1, wallet.many_balances)
                 } else {
                     toast.success("Transaction sent")
                     toast.info("TX ID : " + responseData.txid)
@@ -199,9 +198,7 @@ const Balance = (props) => {
                                                     Copy Wots
                                                 </button>
                                                 <hr className="dropdown-divider"/>
-                                                <div className="dropdown-item" onClick={() => {
-                                                    setIsActive(!isActive)
-                                                }}>
+                                                <div className="dropdown-item" onClick={(event)=>{props.onClick("send", balance)}}>
                                                     Send
                                                 </div>
                                                 <hr className="dropdown-divider"/>
@@ -220,27 +217,6 @@ const Balance = (props) => {
                     </nav>
                 </div>
             </div>
-            <Modal isActive={isActive} setActive={setIsActive} save={handleClick}
-                   title={"Send MCM"}
-                   content={
-                       <>
-                           <p className={"label"}> Source </p>
-                           <div className="select is-link">
-                               <select>
-                                   <option>{balance.tag ? balance.tag : hash(address)}</option>
-                               </select>
-                           </div>
-                           <Input id={"receiver"} label={"Receiver"} type={"text"} placeholder={"********"}
-                                  onChange={handleChange}/>
-                           <Input id={"amount"} label={"Amount"} type={"number"} placeholder={"********"}
-                                  onChange={handleChange}/>
-                       </>
-                   }
-            >
-                <button className="button is-success" onClick={handleClick} id={"send"}>
-                    Send
-                </button>
-            </Modal>
         </div>
     )
 }
